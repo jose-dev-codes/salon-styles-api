@@ -1,0 +1,14 @@
+# Dependencias
+client/node_modules/
+server/node_modules/
+
+# Variables de entorno
+client/.env
+server/.env
+
+# Archivos de compilación
+client/dist/
+server/dist/
+
+# Logs
+*.log
