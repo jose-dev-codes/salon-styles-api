@@ -1,4 +1,4 @@
-// Importa Express y las rutas del módulo de citas.
+// Importa Express y las rutas de los módulos de citas y autenticación.
 import express from "express";
 import citaRoute from "./routes/citaRoutes.js";
 import authRoute from "./routes/authRoutes.js";
@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
     res.send("Servidor funcionando");
 });
 
-// Registra las rutas del módulo de citas bajo el prefijo /api/citas.
+// Registra las rutas de citas y autenticación con sus respectivos prefijos.
 app.use("/api/citas", citaRoute);
 app.use("/api/auth", authRoute);
 
