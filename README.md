@@ -1,6 +1,6 @@
 # API de Gestión de Citas para Salón de Belleza
 
-Este repositorio contiene la estructura del cliente y del servidor para un sistema de gestión de citas de un salón de belleza. La implementación desarrollada en este proyecto corresponde al backend, construido con Node.js, Express y PostgreSQL, el cual expone una API REST para realizar las operaciones de creación, consulta, actualización y eliminación de citas (CRUD).
+Este repositorio contiene la estructura del cliente y del servidor para un sistema de gestión de citas de un salón de belleza. La implementación desarrollada en este proyecto corresponde al backend, construido con Node.js, Express y PostgreSQL, el cual expone una API REST para la autenticación de usuarios y para realizar las operaciones de creación, consulta, actualización y eliminación de citas (CRUD).
 
 ## Tecnologías utilizadas
 
@@ -9,6 +9,8 @@ Este repositorio contiene la estructura del cliente y del servidor para un siste
 - PostgreSQL
 - pnpm
 - dotenv
+- bcryptjs
+- jsonwebtoken
 
 ## Requisitos
 
@@ -43,6 +45,7 @@ DB_PORT=5432
 DB_USER=postgres
 DB_PASSWORD=su_contraseña
 DB_NAME=salon_styles
+JWT_SECRET=su_clave_secreta
 ```
 
 ## Configuración de la base de datos
@@ -62,6 +65,16 @@ pnpm dev
 Si la configuración es correcta, el servidor se iniciará en el puerto definido en el archivo `.env`.
 
 ## Endpoints
+
+### Autenticación
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| POST | `/api/auth/login` | Valida las credenciales del usuario y genera un token JWT. |
+
+Las rutas de citas requieren autenticación mediante un token JWT enviado en el encabezado:
+
+`Authorization: Bearer <token>`
 
 La API expone las siguientes rutas para la gestión de citas:
 

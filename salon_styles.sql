@@ -63,9 +63,30 @@ INSERT INTO usuarios (
     fecha_nacimiento
 )
 VALUES
-    ('Laura', 'Martínez', 'laura@gmail.com', '123456', '3001234567', '2001-05-12'),
-    ('Carlos', 'Ramírez', 'carlos@gmail.com', '123456', '3109876543', '1998-11-20'),
-    ('Sofía', 'Gómez', 'sofia@gmail.com', '123456', '3204567890', '2003-02-15');
+    (
+        'Laura',
+        'Martínez',
+        'laura@gmail.com',
+        '$2a$10$neLVxC9KdMOf1/eK1lQYIeIDSpCduTGYvrDeRalwuuW10MfgG9Ajm',
+        '3001234567',
+        '2001-05-12'
+    ),
+    (
+        'Carlos',
+        'Ramírez',
+        'carlos@gmail.com',
+        '$2a$10$xsm5QsikhroEYXLeM6PUe.Il1yNiK.UB48KzkbGpQTrQ/g2ahCNGy',
+        '3109876543',
+        '1998-11-20'
+    ),
+    (
+        'Sofía',
+        'Gómez',
+        'sofia@gmail.com',
+        '$2a$10$e5S1vOze5aozyyH45PteNeDdGmyTXelvG2fFQ0SuwjIPXSEcnOG8K',
+        '3204567890',
+        '2003-02-15'
+    );
 
 -- Inserción de datos de prueba en la tabla servicios
 INSERT INTO servicios (
