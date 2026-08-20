@@ -1,62 +1,97 @@
-// Importa el pool de conexiones a PostgreSQL.
-import pool from "../config/db.js";
+// Importa todas las operaciones de acceso a datos del model de citas.
+import * as citaModel from "../models/citaModel.js";
 
 // Obtiene todas las citas registradas en la base de datos.
 export const obtenerTodasLasCitas = async () => {
-    const result = await pool.query("SELECT * FROM citas");
-    return result.rows;
+    return await citaModel.obtenerTodasLasCitas();
 };
 
-// Crea una nueva cita con estado "pendiente" por defecto.
+// Valida y crea una nueva cita.
 export const crearCita = async (datos) => {
-    const { id_servicio, id_usuario, fecha, hora, especialista } = datos;
+    const { fecha, hora, especialista } = datos;
 
-    const result = await pool.query(
-        `
-        INSERT INTO citas (
-            id_servicio,
-            id_usuario,
-            fecha,
-            hora,
-            especialista,
-            estado
-        )
-        VALUES ($1, $2, $3, $4, $5, 'pendiente')
-        RETURNING *;
-        `,
-        [id_servicio, id_usuario, fecha, hora, especialista]
+    const fechaActual = new Date().toISOString().split("T")[0];
+
+    if (fecha < fechaActual) {
+        return {
+            exito: false,
+            error: "No se puede crear una cita con una fecha pasada."
+        };
+    }
+
+    const citaExistente = await citaModel.buscarCitaExistente(
+        fecha, hora, especialista
     );
-    return result.rows[0];
+
+    if (citaExistente) {
+        return {
+            exito: false,
+            error: "El especialista ya tiene una cita en esa fecha y hora."
+        };
+    }
+
+    const cita = await citaModel.crearCita(datos);
+
+    return {
+        exito: true,
+        cita
+    };
 };
 
-// Actualiza la fecha, la hora y el especialista de una cita según su identificador.
+// Valida y actualiza la fecha, la hora y el especialista de una cita.
 export const editarCita = async (id, datos) => {
     const { fecha, hora, especialista } = datos;
 
-    const result = await pool.query(
-        `
-        UPDATE citas
-        SET
-            fecha = $1,
-            hora = $2,
-            especialista = $3
-        WHERE id_cita = $4
-        RETURNING *;
-        `,
-        [fecha, hora, especialista, id]
+    const cita = await citaModel.buscarCitaPorId(id);
+
+    if (!cita) {
+        return {
+            exito: false,
+            noEncontrada: true
+        };
+    }
+
+    const fechaActual = new Date().toISOString().split("T")[0];
+
+    if (fecha < fechaActual) {
+        return {
+            exito: false,
+            error: "No se puede actualizar una cita a una fecha pasada."
+        };
+    }
+
+    const citaExistente = await citaModel.buscarCitaExistente(
+        fecha, hora, especialista, id
     );
-    return result.rows[0] || null;
+
+    if (citaExistente) {
+        return {
+            exito: false,
+            error: "El especialista ya tiene una cita en esa fecha y hora."
+        };
+    }
+
+    const citaActualizada = await citaModel.editarCita(id, datos);
+
+    return {
+        exito: true,
+        citaActualizada
+    };
 };
 
-// Elimina una cita según su identificador y devuelve el registro eliminado.
+// Elimina una cita según su identificador.
 export const eliminarCita = async (id) => {
-    const result = await pool.query(
-        `
-        DELETE FROM citas
-        WHERE id_cita = $1
-        RETURNING *;
-        `,
-        [id]
-    );
-    return result.rows[0] || null;
+    const cita = await citaModel.eliminarCita(id);
+
+    if (!cita) {
+        return {
+            exito: false,
+            noEncontrada: true
+        };
+    }
+
+    return {
+        exito: true,
+        cita
+    };
 };

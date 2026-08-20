@@ -1,4 +1,4 @@
-// Importa Express y las rutas de los módulos de citas y autenticación.
+// Importa Express y los routers de los módulos de citas y autenticación.
 import express from "express";
 import citaRoute from "./routes/citaRoutes.js";
 import authRoute from "./routes/authRoutes.js";

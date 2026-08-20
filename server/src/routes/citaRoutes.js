@@ -1,4 +1,4 @@
-// Importa Express para crear las rutas de la API.
+// Importa Express para crear el enrutador de la API.
 import express from "express";
 
 // Importa las funciones del controlador de citas.

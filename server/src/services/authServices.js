@@ -1,34 +1,18 @@
-// Importa el pool de conexiones para realizar consultas a PostgreSQL.
-import pool from "../config/db.js";
+// Importa la función del model encargada de buscar el usuario en PostgreSQL.
+import { obtenerUsuarioPorCorreo } from "../models/usuarioModel.js";
 
 // Importa bcrypt para comparar la contraseña recibida con el hash almacenado.
 import bcrypt from "bcryptjs";
 
 export const validarCredenciales = async (correo, contrasena) => {
     try {
-        // Busca el usuario mediante su correo electrónico.
-        const result = await pool.query(
-        `
-        SELECT
-            id_usuario,
-            nombres,
-            apellidos,
-            correo,
-            contrasena,
-            numero_telefono,
-            fecha_nacimiento
-        FROM usuarios
-        WHERE correo = $1
-        `,
-            [correo]
-        );
+        // Busca el usuario mediante el model.
+        const usuario = await obtenerUsuarioPorCorreo(correo);
 
         // Si no existe un usuario con ese correo, las credenciales no son válidas.
-        if (result.rows.length === 0) {
+        if (!usuario) {
             return null;
         }
-
-        const usuario = result.rows[0];
 
         // Compara la contraseña recibida con el hash almacenado en la base de datos.
         const contrasenaValida = await bcrypt.compare(contrasena, usuario.contrasena);
@@ -52,7 +36,7 @@ export const validarCredenciales = async (correo, contrasena) => {
     } catch (error) {
         // Propaga el error para que el controller gestione la respuesta al cliente.
         throw new Error(
-            "Error en la base de datos durante la autenticación:",
+            "Error en la base de datos durante la autenticación",
             { cause: error }
         );
     }

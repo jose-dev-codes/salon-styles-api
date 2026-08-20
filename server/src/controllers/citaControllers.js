@@ -12,34 +12,81 @@ export const listar = async (req, res) => {
 
 };
 
-// Crea una nueva cita con los datos recibidos en la petición.
+// Valida los datos recibidos y solicita la creación de una nueva cita.
 export const crear = async (req, res) => {
     try {
-        const cita = await citaService.crearCita(req.body);
+        const { id_servicio, id_usuario, fecha, hora, especialista } = req.body;
 
-        res.status(201).json({ mensaje: "Cita creada correctamente", cita });
+        if (!id_servicio || !id_usuario || !fecha || !hora || !especialista) {
+            return res.status(400).json({
+                error: "Todos los datos de la cita son obligatorios"
+            });
+        }
+
+        const resultado = await citaService.crearCita(req.body);
+
+        if (!resultado.exito) {
+            return res.status(400).json({
+                error: resultado.error
+            });
+        }
+
+        res.status(201).json({
+            mensaje: "Cita creada correctamente",
+            cita: resultado.cita
+        });
+
     } catch (error) {
         res.status(500).json({ error: "Error al crear la cita" });
     }
 };
 
-// Actualiza una cita existente según el identificador recibido en la URL.
+// Valida los datos recibidos y solicita la actualización de una cita.
 export const actualizar = async (req, res) => {
     try {
-        const cita = await citaService.editarCita(req.params.id, req.body);
-        if (!cita) return res.status(404).json({ error: "Cita no encontrada" });
-        res.json({ mensaje: "Cita actualizada correctamente", cita });
+        const { fecha, hora, especialista } = req.body;
+
+        if (!fecha || !hora || !especialista) {
+            return res.status(400).json({
+                error: "La fecha, hora y especialista son obligatorios."
+            });
+        }
+
+        const resultado = await citaService.editarCita(req.params.id, req.body);
+
+        if (resultado.noEncontrada) {
+            return res.status(404).json({
+                error: "Cita no encontrada"
+            });
+        }
+
+        if (!resultado.exito) {
+            return res.status(400).json({ error: resultado.error });
+        }
+
+        res.json({
+            mensaje: "Cita actualizada correctamente",
+            cita: resultado.citaActualizada
+        });
+
     } catch (error) {
         res.status(500).json({ error: "Error al actualizar la cita" });
     }
 };
 
-// Elimina una cita según el identificador recibido en la URL.
+// Solicita la eliminación de una cita según el identificador recibido en la URL.
 export const eliminar = async (req, res) => {
     try {
-        const cita = await citaService.eliminarCita(req.params.id);
-        if (!cita) return res.status(404).json({ error: "Cita no encontrada" });
+        const resultado = await citaService.eliminarCita(req.params.id);
+
+        if (resultado.noEncontrada) {
+            return res.status(404).json({
+                error: "Cita no encontrada"
+            });
+        }
+
         res.json({ mensaje: "Cita eliminada correctamente" });
+
     } catch (error) {
         res.status(500).json({ error: "Error al eliminar la cita" });
     }

@@ -1,4 +1,4 @@
-// Importa jsonwebtoken para verificar la autenticidad del token recibido.
+// Importa jsonwebtoken para verificar la validez del token recibido.
 import jwt from "jsonwebtoken";
 
 
@@ -21,8 +21,7 @@ export const verificarAutenticacion = (req, res, next) => {
         // Verifica el token utilizando la clave secreta configurada en las variables de entorno.
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        /* Guarda los datos del usuario obtenidos del token para que estén disponibles en los
-        siguientes procesos.*/
+        // Guarda los datos del usuario obtenidos del token para que estén disponibles en el siguiente middleware o controlador.
         req.usuario = decoded;
 
         // Permite que la petición continúe hacia el siguiente middleware o controlador.
