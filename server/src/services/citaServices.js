@@ -2,8 +2,8 @@
 import * as citaModel from "../models/citaModel.js";
 
 // Obtiene todas las citas registradas en la base de datos.
-export const obtenerTodasLasCitas = async () => {
-    return await citaModel.obtenerTodasLasCitas();
+export const obtenerTodasLasCitas = async (idUsuario) => {
+    return await citaModel.obtenerTodasLasCitas(idUsuario);
 };
 
 // Valida y crea una nueva cita.

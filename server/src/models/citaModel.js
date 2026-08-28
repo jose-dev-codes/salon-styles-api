@@ -2,8 +2,15 @@
 import pool from "../config/db.js";
 
 // Obtiene todas las citas registradas en la base de datos.
-export const obtenerTodasLasCitas = async () => {
-    const result = await pool.query("SELECT * FROM citas");
+export const obtenerTodasLasCitas = async (idUsuario) => {
+    const result = await pool.query(
+        `
+        SELECT *
+        FROM citas
+        WHERE id_usuario = $1;
+        `,
+        [idUsuario]
+    );
     return result.rows;
 };
 

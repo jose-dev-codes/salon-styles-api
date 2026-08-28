@@ -31,7 +31,7 @@ export const login = async (req, res) => {
         );
 
         // Devuelve los datos del usuario y el token generado.
-        res.status(200).json({
+        return res.status(200).json({
             usuario: usuario.usuario,
             token: `Bearer ${token}`
         });

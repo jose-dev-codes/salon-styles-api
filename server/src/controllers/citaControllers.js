@@ -4,7 +4,10 @@ import * as citaService from "../services/citaServices.js";
 // Obtiene todas las citas registradas y las devuelve en formato JSON
 export const listar = async (req, res) => {
     try {
-        const citas = await citaService.obtenerTodasLasCitas();
+        const citas = await citaService.obtenerTodasLasCitas(
+            req.usuario.id
+        );
+
         res.json(citas);
     } catch (error) {
         res.status(500).json({ error: "Error al obtener las citas" });
@@ -15,15 +18,24 @@ export const listar = async (req, res) => {
 // Valida los datos recibidos y solicita la creación de una nueva cita.
 export const crear = async (req, res) => {
     try {
-        const { id_servicio, id_usuario, fecha, hora, especialista } = req.body;
+        const { id_servicio, fecha, hora, especialista } = req.body;
+        const id_usuario = req.usuario.id;
 
-        if (!id_servicio || !id_usuario || !fecha || !hora || !especialista) {
+        if (!id_servicio || !fecha || !hora || !especialista) {
             return res.status(400).json({
                 error: "Todos los datos de la cita son obligatorios"
             });
         }
 
-        const resultado = await citaService.crearCita(req.body);
+        const datosCita = {
+            id_servicio,
+            fecha,
+            hora,
+            especialista,
+            id_usuario
+        };
+
+        const resultado = await citaService.crearCita(datosCita);
 
         if (!resultado.exito) {
             return res.status(400).json({
