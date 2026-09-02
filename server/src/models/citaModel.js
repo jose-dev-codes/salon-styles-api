@@ -55,6 +55,21 @@ export const editarCita = async (id, datos) => {
     return result.rows[0] || null;
 };
 
+// Cancela una cita cambiando su estado a "cancelada".
+export const cancelarCita = async (id) => {
+    const result = await pool.query(
+        `
+        UPDATE citas
+        SET estado = 'cancelada'
+        WHERE id_cita = $1
+        RETURNING *;
+        `,
+        [id]
+    );
+
+    return result.rows[0] || null;
+};
+
 // Elimina una cita según su identificador y devuelve el registro eliminado.
 export const eliminarCita = async (id) => {
     const result = await pool.query(

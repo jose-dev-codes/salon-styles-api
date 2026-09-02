@@ -79,6 +79,25 @@ export const editarCita = async (id, datos) => {
     };
 };
 
+// Cancela una cita y devuelve el resultado de la operación.
+export const cancelarCita = async (id) => {
+    const cita = await citaModel.buscarCitaPorId(id);
+
+    if (!cita) {
+        return {
+            exito: false,
+            noEncontrada: true
+        };
+    }
+
+    const citaCancelada = await citaModel.cancelarCita(id);
+
+    return {
+        exito: true,
+        citaCancelada
+    };
+};
+
 // Elimina una cita según su identificador.
 export const eliminarCita = async (id) => {
     const cita = await citaModel.eliminarCita(id);

@@ -22,6 +22,14 @@ router.put(
     verificarPropietarioCita,
     citaController.actualizar
 );
+
+router.patch(
+    "/:id/cancelar",
+    verificarAutenticacion,
+    verificarPropietarioCita,
+    citaController.cancelar
+);
+
 router.delete(
     "/:id",
     verificarAutenticacion,

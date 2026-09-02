@@ -86,6 +86,29 @@ export const actualizar = async (req, res) => {
     }
 };
 
+// Solicita la cancelación de una cita según el identificador recibido en la URL.
+export const cancelar = async (req, res) => {
+    try {
+        const resultado = await citaService.cancelarCita(req.params.id);
+
+        if (resultado.noEncontrada) {
+            return res.status(404).json({
+                error: "Cita no encontrada"
+            });
+        }
+
+        res.json({
+            mensaje: "Cita cancelada correctamente",
+            cita: resultado.citaCancelada
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            error: "Error al cancelar la cita"
+        });
+    }
+};
+
 // Solicita la eliminación de una cita según el identificador recibido en la URL.
 export const eliminar = async (req, res) => {
     try {
