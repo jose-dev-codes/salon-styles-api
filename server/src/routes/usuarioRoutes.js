@@ -41,6 +41,7 @@ router.delete(
     "/:id",
     verificarAutenticacion,
     verificarPropietario,
-    usuarioController.eliminarUsuario);
+    usuarioController.eliminarUsuario
+);
 
 export default router;

@@ -12,3 +12,5 @@ server/dist/
 
 # Logs
 *.log
+
+client/config/api.ts

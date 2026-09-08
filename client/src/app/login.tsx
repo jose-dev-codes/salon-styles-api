@@ -1,10 +1,8 @@
 import {
-  Button,
   KeyboardAvoidingView,
   StyleSheet,
   ScrollView,
   Text,
-  TextInput,
   View
 } from 'react-native';
 
@@ -13,6 +11,14 @@ import { useState } from 'react';
 import { validarLogin } from '@/validators/authValidator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { iniciarSesion } from '@/services/authService';
+import {
+  actualizarCampo,
+  limpiarError,
+  limpiarCampos
+} from '@/utils/formularioUtils';
+
+import Boton from '@/components/Boton';
+import CampoFormulario from '@/components/campoFormulario';
 
 const LoginScreen = () => {
   const [correo, setCorreo] = useState('');
@@ -20,17 +26,28 @@ const LoginScreen = () => {
   const [error, setError] = useState('');
 
   const manejarInicioSesion = async () => {
-    const mensajeError = validarLogin(correo, contrasena);
+    const datosLimpios = limpiarCampos({
+      correo,
+      contrasena
+    });
+
+    const mensajeError = validarLogin(
+      datosLimpios.correo,
+      datosLimpios.contrasena
+    );
 
     if (mensajeError) {
       setError(mensajeError);
       return;
     }
 
-    setError('');
+    limpiarError(setError);
 
     try {
-      const { respuesta, datos } = await iniciarSesion(correo, contrasena);
+      const { respuesta, datos } = await iniciarSesion(
+        datosLimpios.correo,
+        datosLimpios.contrasena
+      );
 
       if (!respuesta.ok) {
         setError(datos.error);
@@ -48,7 +65,7 @@ const LoginScreen = () => {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
+      style={styles.keyboardView}
       behavior='padding'
     >
       <ScrollView
@@ -57,37 +74,41 @@ const LoginScreen = () => {
       >
         <Text style={styles.title}>Iniciar sesión</Text>
 
-        <Text style={styles.label}>Correo electrónico</Text>
-        <TextInput
-          style={styles.input}
+        <CampoFormulario
+          label='Correo electrónico'
           placeholder='ejemplo@correo.com'
           value={correo}
-          onChangeText={setCorreo}
           keyboardType='email-address'
           autoCapitalize='none'
+          onChangeText={(texto) =>
+            actualizarCampo(texto, setCorreo, setError)
+          }
         />
 
-        <Text style={styles.label}>Contraseña</Text>
-        <TextInput
-          style={styles.input}
+        <CampoFormulario
+          label='Contraseña'
           placeholder='Ingresa tu contraseña'
           value={contrasena}
-          onChangeText={setContrasena}
           secureTextEntry
+          onChangeText={(texto) =>
+            actualizarCampo(texto, setContrasena, setError)
+          }
         />
 
         {error && <Text style={styles.error}>{error}</Text>}
 
         <View style={styles.buttonContainer}>
-          <Button
-            title="Iniciar sesión"
+
+          <Boton
+            texto='Iniciar sesión'
             onPress={manejarInicioSesion}
           />
 
-          <Button
-            title="Volver al inicio"
+          <Boton
+            texto='Volver al inicio'
             onPress={() => router.back()}
           />
+
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -104,13 +125,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    textAlign: 'center'
-  },
-  input: {
-    borderWidth: 1,
-    padding: 10,
-    marginBottom: 15,
-    borderRadius: 5
+    textAlign: 'center',
+    color: '#E42BB8'
   },
   buttonContainer: {
     gap: 10
@@ -119,10 +135,9 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     color: 'red'
   },
-  label: {
-    alignSelf: 'flex-start',
-    marginBottom: 5,
-    fontWeight: 'bold'
+  keyboardView: {
+    flex: 1,
+    backgroundColor: '#FCE3EE'
   }
 });
 

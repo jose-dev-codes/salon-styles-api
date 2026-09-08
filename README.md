@@ -1,6 +1,6 @@
 # API de Gestión de Citas para Salón de Belleza
 
-Este repositorio contiene la estructura del cliente y del servidor para un sistema de gestión de citas de un salón de belleza. La implementación desarrollada en este proyecto corresponde al backend, construido con Node.js, Express y PostgreSQL, el cual expone una API REST para la autenticación de usuarios, la gestión de usuarios y para realizar las operaciones de creación, consulta, actualización y eliminación de citas (CRUD).
+Este repositorio contiene la estructura del cliente y del servidor para un sistema de gestión de citas de un salón de belleza. La implementación desarrollada en este proyecto corresponde principalmente al backend, construido con Node.js, Express y PostgreSQL, el cual expone una API REST para la autenticación de usuarios, la gestión de usuarios y la gestión de citas.
 
 ## Tecnologías utilizadas
 
@@ -39,23 +39,44 @@ Antes de ejecutar el proyecto, asegúrese de tener instalado:
 
 1. Abra una terminal y ubíquese en la carpeta `server`:
 
-    cd server
+```bash
+cd server
+```
 
 2. Instale las dependencias del proyecto:
 
-    pnpm install
+```bash
+pnpm install
+```
 
 ## Configuración
 
 Cree un archivo llamado `.env` dentro de la carpeta `server` con el siguiente contenido:
 
-    PORT=3000
-    DB_HOST=localhost
-    DB_PORT=5432
-    DB_USER=postgres
-    DB_PASSWORD=su_contraseña
-    DB_NAME=salon_styles
-    JWT_SECRET=su_clave_secreta
+```env
+PORT=3000
+
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=su_contraseña
+DB_NAME=salon_styles
+JWT_SECRET=su_clave_secreta
+```
+
+Para configurar la conexión entre el cliente y el servidor:
+
+1. Copie el archivo `client/config/api.example.ts`.
+2. Cree un archivo llamado `api.ts` dentro de la carpeta `client/config/`.
+3. Abra el archivo `client/config/api.ts` y configure la URL correspondiente al servidor:
+
+```ts
+export const API_URL = 'http://IP_DEL_COMPUTADOR:3000/api';
+```
+
+Reemplace `IP_DEL_COMPUTADOR` por la dirección IP del computador donde se está ejecutando el backend.
+
+> El archivo `client/config/api.ts` está incluido en `.gitignore` y no debe subirse al repositorio, ya que la dirección IP puede variar según la red y el computador utilizado.
 
 ## Configuración de la base de datos
 
@@ -67,7 +88,9 @@ Cree un archivo llamado `.env` dentro de la carpeta `server` con el siguiente co
 
 Desde la carpeta `server`, ejecute el siguiente comando:
 
-    pnpm dev
+```bash
+pnpm dev
+```
 
 Si la configuración es correcta, el servidor se iniciará en el puerto definido en el archivo `.env`.
 
@@ -130,6 +153,7 @@ La API expone las siguientes rutas para la gestión de citas:
 | GET | `/api/citas` | Obtiene las citas del usuario autenticado. |
 | POST | `/api/citas` | Crea una nueva cita para el usuario autenticado. |
 | PUT | `/api/citas/:id` | Actualiza una cita existente según su identificador. |
+| PATCH | `/api/citas/:id/cancelar` | Cancela una cita existente según su identificador. |
 | DELETE | `/api/citas/:id` | Elimina una cita según su identificador. |
 
 ### Reglas para las citas
@@ -143,9 +167,10 @@ Al crear o actualizar una cita se realizan las siguientes validaciones:
 - Al consultar las citas, únicamente se muestran las citas pertenecientes al usuario autenticado.
 - Al actualizar una cita, primero se verifica que la cita indicada exista.
 - Al comprobar una posible cita duplicada durante una actualización, la propia cita que se está modificando se excluye de la búsqueda.
-- Antes de actualizar o eliminar una cita se verifica que pertenezca al usuario autenticado.
-- Un usuario no puede modificar ni eliminar una cita perteneciente a otro usuario.
+- Antes de actualizar, cancelar o eliminar una cita se verifica que pertenezca al usuario autenticado.
+- Un usuario no puede modificar, cancelar ni eliminar una cita perteneciente a otro usuario.
+- Al cancelar una cita, se verifica que el identificador corresponda a una cita existente.
 - Al eliminar una cita, se verifica que el identificador corresponda a una cita existente.
-- Las operaciones de creación, actualización y eliminación requieren autenticación.
-
-Las citas nuevas se crean con el estado `pendiente` por defecto.
+- Las operaciones de creación, actualización, cancelación y eliminación requieren autenticación.
+- Las citas nuevas se crean con el estado `pendiente` por defecto.
+- Una cita cancelada no puede volver a ser modificada ni cancelada desde la aplicación.

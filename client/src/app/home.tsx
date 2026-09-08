@@ -1,6 +1,7 @@
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Boton from '@/components/Boton';
 
 const HomeScreen = () => {
 
@@ -13,21 +14,21 @@ const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Cejas y uñas</Text>
-
-      <Button
-        title='Ver mis citas'
+      <Boton
+        texto='Ver mis citas'
         onPress={() => router.push('/citas')}
       />
 
-      <Button
-        title='Nueva cita'
+      <Boton
+        texto='Nueva cita'
         onPress={() => router.push('/crear-cita')}
       />
 
-      <Button
-        title='Cerrar sesión'
+      <Boton
+        texto='Cerrar sesión'
         onPress={cerrarSesion}
       />
+
     </View>
   );
 };
@@ -38,11 +39,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    gap: 20
+    gap: 20,
+    backgroundColor: '#FCE3EE'
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    color: '#E42BB8'
   }
 });
 

@@ -53,14 +53,11 @@ export const obtenerUsuarioPorId = async (req, res) => {
 
         if (resultado.noEncontrado) {
             return res.status(404).json({
-                error: "Usuario no encontrado"
+                error: "Usuario no encontrado."
             });
         }
 
-        return res.status(200).json({
-            exito: true,
-            usuario: resultado.usuario
-        });
+        return res.status(200).json(resultado);
 
     } catch (error) {
         res.status(500).json({
@@ -76,13 +73,13 @@ export const eliminarUsuario = async (req, res) => {
 
         if (resultado.noEncontrado) {
             return res.status(404).json({
-                error: "Usuario no encontrado"
+                error: "Usuario no encontrado."
             });
         }
 
         return res.status(200).json({
             exito: resultado.exito,
-            mensaje: "Usuario eliminado exitosamente"
+            mensaje: "Usuario eliminado exitosamente."
         });
 
     } catch (error) {
@@ -100,13 +97,13 @@ export const actualizarContrasena = async (req, res) => {
 
         if (resultado.noEncontrado) {
             return res.status(404).json({
-                error: "Usuario no encontrado"
+                error: "Usuario no encontrado."
             });
         }
 
         return res.status(200).json({
             exito: resultado.exito,
-            mensaje: "Cambio de contraseña exitoso"
+            mensaje: "Cambio de contraseña exitoso."
         });
 
     } catch (error) {

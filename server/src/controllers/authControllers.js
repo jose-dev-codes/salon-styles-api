@@ -5,14 +5,13 @@ import * as authService from "../services/authServices.js";
 import jwt from "jsonwebtoken";
 
 export const login = async (req, res) => {
-
     // Obtiene el correo y la contraseña enviados en el cuerpo de la petición.
     const { correo, contrasena } = req.body;
 
     try {
         // Verifica que se hayan enviado ambos campos antes de continuar.
         if (!correo || !contrasena) {
-            return res.status(400).json({ error: "El correo y la contraseña son obligatorios" });
+            return res.status(400).json({ error: "El correo y la contraseña son obligatorios." });
         }
 
         // Envía las credenciales al servicio para comprobar si son correctas.
@@ -21,7 +20,7 @@ export const login = async (req, res) => {
         );
 
         // Si las credenciales no coinciden, se rechaza el acceso.
-        if (!usuario) return res.status(401).json({ error: "Credenciales incorrectas" });
+        if (!usuario) return res.status(401).json({ error: "Credenciales incorrectas." });
 
         // Genera un token JWT con la identificación y el correo del usuario.
         const token = jwt.sign(
@@ -38,6 +37,6 @@ export const login = async (req, res) => {
 
     } catch (error) {
         // Responde con un error interno si ocurre un problema durante el proceso.
-        res.status(500).json({ error: "Error interno del servidor" });
+        res.status(500).json({ error: "Error interno del servidor." });
     }
 };

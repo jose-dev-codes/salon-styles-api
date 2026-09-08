@@ -1,16 +1,18 @@
 // Importa todas las operaciones de acceso a datos del model de citas.
 import * as citaModel from "../models/citaModel.js";
 
-// Obtiene todas las citas registradas en la base de datos.
-export const obtenerTodasLasCitas = async (idUsuario) => {
-    return await citaModel.obtenerTodasLasCitas(idUsuario);
+import { obtenerFechaActual } from "../utils/validacionUtils.js";
+
+// Obtiene todas las citas del usuario autenticado.
+export const obtenerTodasLasCitas = (idUsuario) => {
+    return citaModel.obtenerTodasLasCitas(idUsuario);
 };
 
 // Valida y crea una nueva cita.
 export const crearCita = async (datos) => {
     const { fecha, hora, especialista } = datos;
 
-    const fechaActual = new Date().toISOString().split("T")[0];
+    const fechaActual = obtenerFechaActual();
 
     if (fecha < fechaActual) {
         return {
@@ -51,7 +53,7 @@ export const editarCita = async (id, datos) => {
         };
     }
 
-    const fechaActual = new Date().toISOString().split("T")[0];
+    const fechaActual = obtenerFechaActual();
 
     if (fecha < fechaActual) {
         return {

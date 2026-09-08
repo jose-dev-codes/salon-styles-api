@@ -1,6 +1,8 @@
 // Importa todas las operaciones de acceso a datos del model de usuarios.
 import * as usuarioModel from "../models/usuarioModel.js";
 
+import { obtenerFechaActual } from "../utils/validacionUtils.js";
+
 import bcrypt from "bcryptjs";
 
 // Valida y crea un nuevo usuario.
@@ -16,7 +18,7 @@ export const crearUsuario = async (datos) => {
         };
     }
 
-    const fechaActual = new Date().toISOString().split("T")[0];
+    const fechaActual = obtenerFechaActual();
 
     if (datos.fecha_nacimiento > fechaActual) {
         return {
@@ -51,6 +53,15 @@ export const actualizarUsuario = async (id, datos) => {
         };
     }
 
+    const fechaActual = obtenerFechaActual();
+
+    if (datos.fecha_nacimiento > fechaActual) {
+        return {
+            exito: false,
+            error: "La fecha de nacimiento no puede ser futura."
+        };
+    }
+
     const usuarioExistente = await usuarioModel.obtenerUsuarioPorCorreo(
         datos.correo
     );
@@ -58,7 +69,7 @@ export const actualizarUsuario = async (id, datos) => {
     if (usuarioExistente && usuarioExistente.id_usuario !== id) {
         return {
             exito: false,
-            error: "Este correo ya está registrado"
+            error: "Este correo ya está registrado."
         };
     }
 
@@ -70,6 +81,7 @@ export const actualizarUsuario = async (id, datos) => {
     };
 };
 
+// Obtiene un usuario según su identificador.
 export const obtenerUsuarioPorId = async (id) => {
     const usuario = await usuarioModel.buscarUsuarioPorId(id);
 
@@ -86,6 +98,7 @@ export const obtenerUsuarioPorId = async (id) => {
     };
 };
 
+// Elimina un usuario según su identificador.
 export const eliminarUsuario = async (id) => {
     const resultado = await usuarioModel.eliminarUsuario(id);
 
@@ -101,6 +114,7 @@ export const eliminarUsuario = async (id) => {
     };
 };
 
+// Hashea y actualiza la contraseña de un usuario.
 export const actualizarContrasena = async (id, contrasena) => {
     const contrasenaHasheada = await bcrypt.hash(contrasena, 10);
 

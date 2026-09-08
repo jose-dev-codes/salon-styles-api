@@ -17,6 +17,7 @@ try {
     client.release();
 } catch (error) {
     console.error("Error al conectar a PostgreSQL:", error.message);
+    process.exit(1);
 }
 
 export default pool;

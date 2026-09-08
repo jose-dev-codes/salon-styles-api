@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL } from '../../config/api';
 
+// Obtiene las citas del usuario autenticado mediante una solicitud al backend.
 export const obtenerMisCitas = async () => {
   const token = await AsyncStorage.getItem('token');
 
@@ -8,7 +10,33 @@ export const obtenerMisCitas = async () => {
   }
 
   const respuesta = await fetch(
-    'http://192.168.1.95:3000/api/citas',
+    `${API_URL}/citas`,
+    {
+      method: 'GET',
+      headers: {
+        'Authorization': token
+      }
+    }
+  );
+
+  const datos = await respuesta.json();
+
+  return {
+    respuesta,
+    datos
+  };
+};
+
+// Obtiene los servicios disponibles mediante una solicitud al backend.
+export const obtenerServicios = async () => {
+  const token = await AsyncStorage.getItem('token');
+
+  if (!token) {
+    return null;
+  }
+
+  const respuesta = await fetch(
+    `${API_URL}/servicios`,
     {
       method: 'GET',
       headers: {
@@ -39,7 +67,7 @@ export const crearCita = async(
   }
 
   const respuesta = await fetch(
-    'http://192.168.1.95:3000/api/citas',
+    `${API_URL}/citas`,
     {
       method: 'POST',
       headers: {
@@ -47,7 +75,7 @@ export const crearCita = async(
         'Authorization': token
       },
       body: JSON.stringify({
-        id_servicio: idServicio,
+        id_servicio: Number(idServicio),
         fecha,
         hora,
         especialista
@@ -63,6 +91,7 @@ export const crearCita = async(
   };
 };
 
+// Actualiza los datos de una cita mediante una solicitud al backend.
 export const actualizarCita = async (
   id: string,
   fecha: string,
@@ -76,7 +105,7 @@ export const actualizarCita = async (
   }
 
   const respuesta = await fetch(
-    `http://192.168.1.95:3000/api/citas/${id}`,
+    `${API_URL}/citas/${id}`,
     {
       method: 'PUT',
       headers: {
@@ -108,7 +137,7 @@ export const cancelarCita = async (id: string) => {
   }
 
   const respuesta = await fetch(
-    `http://192.168.1.95:3000/api/citas/${id}/cancelar`,
+    `${API_URL}/citas/${id}/cancelar`,
     {
       method: 'PATCH',
       headers: {

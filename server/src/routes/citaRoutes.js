@@ -9,17 +9,25 @@ import { verificarAutenticacion } from "../middlewares/authMiddleware.js";
 
 import { verificarPropietarioCita } from "../middlewares/verificarPropietarioCita.js";
 
+import { validarCita } from "../middlewares/validarCita.js";
+
 // Crea una instancia del enrutador de Express.
 const router = express.Router();
 
-// Define las rutas del CRUD de citas y protege cada operación mediante autenticación.
+// Define las rutas de citas y protege cada operación según corresponda.
 router.get("/", verificarAutenticacion, citaController.listar);
-router.post("/", verificarAutenticacion, citaController.crear);
+router.post(
+    "/",
+    verificarAutenticacion,
+    validarCita,
+    citaController.crear
+);
 
 router.put(
     "/:id",
     verificarAutenticacion,
     verificarPropietarioCita,
+    validarCita,
     citaController.actualizar
 );
 

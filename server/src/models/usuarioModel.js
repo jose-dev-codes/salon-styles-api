@@ -104,6 +104,7 @@ export const buscarUsuarioPorId = async (id) => {
     return result.rows[0] || null;
 };
 
+// Elimina un usuario de la base de datos mediante su identificador.
 export const eliminarUsuario = async (id) => {
     const result = await pool.query(
         `
@@ -116,6 +117,7 @@ export const eliminarUsuario = async (id) => {
     return result.rowCount;
 };
 
+// Actualiza la contraseña de un usuario mediante su identificador.
 export const actualizarContrasena = async (id, contrasena) => {
     const result = await pool.query(
         `
