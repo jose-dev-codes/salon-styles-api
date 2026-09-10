@@ -54,6 +54,7 @@ ADD CONSTRAINT fk_citas_usuarios
 FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario);
 
 -- Inserción de datos de prueba en la tabla usuarios
+-- Contraseña en texto plano de estos hashes: documentada aparte.
 INSERT INTO usuarios (
     nombres,
     apellidos,
@@ -67,7 +68,7 @@ VALUES
         'Laura',
         'Martínez',
         'laura@gmail.com',
-        '$2a$10$neLVxC9KdMOf1/eK1lQYIeIDSpCduTGYvrDeRalwuuW10MfgG9Ajm',
+        '$2b$10$TXxPpJyGW2tJt/87IYxffOjoPkYfIgBlTfo7bFG5/7BDj9HOB/KXm',
         '3001234567',
         '2001-05-12'
     ),
@@ -75,7 +76,7 @@ VALUES
         'Carlos',
         'Ramírez',
         'carlos@gmail.com',
-        '$2a$10$xsm5QsikhroEYXLeM6PUe.Il1yNiK.UB48KzkbGpQTrQ/g2ahCNGy',
+        '$2b$10$lHQJC8cpuFPtWuL0C3XTEu/VD3qrVRvi5wXwFbCbLZKZZ.r7NEQr6',
         '3109876543',
         '1998-11-20'
     ),
@@ -83,7 +84,7 @@ VALUES
         'Sofía',
         'Gómez',
         'sofia@gmail.com',
-        '$2a$10$e5S1vOze5aozyyH45PteNeDdGmyTXelvG2fFQ0SuwjIPXSEcnOG8K',
+        '$2b$10$j35AdE6pc1fGVBQvJ/Zfi.kofnnsGg.WO8Zyh61LF.DlIZVA5sgYy',
         '3204567890',
         '2003-02-15'
     );
