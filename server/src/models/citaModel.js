@@ -5,9 +5,14 @@ import pool from "../config/db.js";
 export const obtenerTodasLasCitas = async (idUsuario) => {
     const result = await pool.query(
         `
-        SELECT *
-        FROM citas
-        WHERE id_usuario = $1;
+        SELECT
+            c.*,
+            s.nombre AS servicio,
+            s.costo AS precio
+        FROM citas c
+        JOIN servicios s
+            ON c.id_servicio = s.id_servicio
+        WHERE c.id_usuario = $1;
         `,
         [idUsuario]
     );

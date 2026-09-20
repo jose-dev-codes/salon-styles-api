@@ -1,5 +1,6 @@
 import {
   Alert,
+  Image,
   Modal,
   StyleSheet,
   ScrollView,
@@ -11,8 +12,11 @@ import {
 import { cancelarCita, obtenerMisCitas } from '@/services/citaService';
 import { useCallback, useState } from 'react';
 import { useFocusEffect, router } from 'expo-router';
-import { formatearHora } from '@/utils/formularioUtils';
+import { formatearHora, formatearPrecio } from '@/utils/formularioUtils';
 import Boton from '@/components/Boton';
+import ModalExito from '@/components/ModalExito';
+import Header from '@/components/Header';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Cita = {
   id_cita: number;
@@ -22,6 +26,8 @@ type Cita = {
   hora: string;
   especialista: string;
   estado: string;
+  servicio: string;
+  precio: number
 };
 
 const formatearFecha = (fecha: string) => {
@@ -38,6 +44,7 @@ const CitasScreen = () => {
   const [citas, setCitas] = useState<Cita[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [citaSeleccionada, setCitaSeleccionada] = useState<number | null>(null);
+  const [mostrarExito, setMostrarExito] = useState(false);
 
   // Consulta las citas del usuario y actualiza la lista.
   const cargarCitas = async () => {
@@ -52,7 +59,7 @@ const CitasScreen = () => {
     const resultado = await cancelarCita(id.toString());
 
     if (resultado?.respuesta.ok) {
-      cargarCitas();
+      setMostrarExito(true);
       return;
     }
 
@@ -74,7 +81,9 @@ const CitasScreen = () => {
   );
 
   return (
-    <>
+    <SafeAreaView style={styles.safeArea}>
+      <Header titulo='Mis citas' />
+
       <Modal
         visible={modalVisible}
         transparent
@@ -114,20 +123,43 @@ const CitasScreen = () => {
         </View>
       </Modal>
 
+      <ModalExito
+        visible={mostrarExito}
+        mensaje='Cita cancelada correctamente'
+        onClose={() => {
+          setMostrarExito(false);
+          cargarCitas();
+        }}
+      />
+
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.container}
       >
-        <Text style={styles.title}>Mis citas</Text>
 
         {citas.length === 0 ? (
-          <Text>No tienes citas agendadas</Text>
+          <View style={styles.vacio}>
+            <Image
+              source={require('@/assets/images/avatar-sin-citas.png')}
+              style={styles.imagenVacia} />
+            <Text style={styles.mensajeVacio}>No tienes citas agendadas</Text>
+          </View>
         ) : (
           citas.map((cita) => (
             <View
               key={cita.id_cita}
               style={styles.cita}
             >
+              <View style={styles.fila}>
+                <Text style={styles.label}>Servicio:</Text>
+                <Text style={styles.valor}>{cita.servicio}</Text>
+              </View>
+
+              <View style={styles.fila}>
+                <Text style={styles.label}>Precio:</Text>
+                <Text style={styles.valor}>{formatearPrecio(cita.precio)}</Text>
+              </View>
+
               <View style={styles.fila}>
                 <Text style={styles.label}>Fecha:</Text>
                 <Text style={styles.valor}>{formatearFecha(cita.fecha)}</Text>
@@ -163,11 +195,15 @@ const CitasScreen = () => {
                         }
                       })
                     }
+                    flex={1}
+                    borderRadius={12}
                   />
 
                   <Boton
-                    texto='Cancelar cita'
+                    texto='Cancelar'
                     onPress={() => mostrarConfirmacionCancelacion(cita.id_cita)}
+                    flex={1}
+                    borderRadius={12}
                   />
 
                 </View>
@@ -176,34 +212,29 @@ const CitasScreen = () => {
           ))
         )}
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
     alignItems: 'center',
-    padding: 20
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-    color: '#E42BB8'
+    padding: 20,
+    paddingTop: 40,
+    paddingBottom: 100
   },
   cita: {
     width: '100%',
     padding: 15,
     marginBottom: 15,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#D922AC',
-    borderRadius: 8,
+    borderRadius: 12,
     backgroundColor: '#FFFFFF'
   },
   botones: {
-    gap: 10,
+    flexDirection: 'row',
+    gap: 15,
     marginTop: 15
   },
   fila: {
@@ -275,6 +306,26 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   scrollView: {
+    backgroundColor: '#FCE3EE'
+  },
+  vacio: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20
+  },
+  imagenVacia: {
+    width: 130,
+    height: 135,
+    marginBottom: 15
+  },
+  mensajeVacio: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#E42BB8'
+  },
+  safeArea: {
+    flex: 1,
     backgroundColor: '#FCE3EE'
   }
 });

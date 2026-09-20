@@ -15,6 +15,11 @@ import { actualizarCampo, limpiarError, limpiarCampos } from '@/utils/formulario
 import { validarCita } from '@/validators/citaValidator';
 import Boton from '@/components/Boton';
 import CampoFormulario from '@/components/campoFormulario';
+import ModalExito from '@/components/ModalExito';
+import MensajeError from '@/components/MensajeError';
+import { formatearPrecio } from '@/utils/formularioUtils';
+import Header from '@/components/Header';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const CrearCitaScreen = () => {
   const [idServicio, setIdServicio] = useState('');
@@ -24,6 +29,7 @@ const CrearCitaScreen = () => {
   const [servicios, setServicios] = useState<any[]>([]);
   const [modalServiciosVisible, setModalServiciosVisible] = useState(false);
   const [error, setError] = useState('');
+  const [mostrarExito, setMostrarExito] = useState(false);
 
   useEffect(() => {
     const cargarServicios = async () => {
@@ -37,7 +43,7 @@ const CrearCitaScreen = () => {
     cargarServicios();
   }, []);
 
-  // Envía los datos de la cita al backend y redirige a la lista si se crea correctamente.
+  // Envía los datos de la cita al backend y muestra un mensaje si se crea correctamente.
   const guardarCita = async () => {
     limpiarError(setError);
 
@@ -74,7 +80,7 @@ const CrearCitaScreen = () => {
       }
 
       if (resultado?.respuesta.ok) {
-        router.replace('/citas');
+        setMostrarExito(true);
       }
     } catch (error) {
       console.error('Error al conectar con el sevidor');
@@ -84,131 +90,134 @@ const CrearCitaScreen = () => {
 
 
   return (
-    <KeyboardAvoidingView
-      style={styles.keyboardView}
-      behavior="padding"
-    >
-      <ScrollView
-        contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps="handled"
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        style={styles.keyboardView}
+        behavior="padding"
       >
-        <Text style={styles.title}>Crear cita</Text>
+        <Header titulo='Agendar cita' />
 
-        <TouchableOpacity
-          style={styles.selectorServicio}
-          onPress={() => setModalServiciosVisible(true)}
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
         >
-          <Text style={styles.textoSelector}>
-            {idServicio
-              ? servicios.find(
-                (servicio) =>
-                  servicio.id_servicio.toString() === idServicio
-                )?.nombre
-              : 'Selecciona un servicio'
-            }
-          </Text>
 
-          <Text style={styles.flechaSelector}>▼</Text>
-        </TouchableOpacity>
-
-        <CampoFormulario
-          label='Fecha'
-          placeholder='AAAA-MM-DD'
-          value={fechaCita}
-          onChangeText={(texto) =>
-            actualizarCampo(texto, setFechaCita, setError)
-          }
-        />
-
-        <CampoFormulario
-          label='Hora'
-          placeholder='HH:MM'
-          value={horaCita}
-          onChangeText={(texto) =>
-            actualizarCampo(texto, setHoraCita, setError)
-          }
-        />
-
-        <CampoFormulario
-          label='Especialista'
-          placeholder='Nombre del especialista'
-          value={especialistaCita}
-          onChangeText={(texto) =>
-            actualizarCampo(texto, setEspecialistaCita, setError)
-          }
-        />
-
-        {error && (
-          <Text style={styles.error}>{error}</Text>
-        )}
-
-        <Boton
-          texto='Crear cita'
-          onPress={guardarCita}
-        />
-
-      </ScrollView>
-
-      <Modal
-        visible={modalServiciosVisible}
-        transparent
-        animationType='fade'
-        onRequestClose={() => setModalServiciosVisible(false)}
-      >
-        <View style={styles.fondoModal}>
-          <View style={styles.modalServicios}>
-            <Text style={styles.tituloModal}>
-              Selecciona un servicio
+          <TouchableOpacity
+            style={styles.selectorServicio}
+            onPress={() => setModalServiciosVisible(true)}
+          >
+            <Text style={styles.textoSelector}>
+              {idServicio
+                ? servicios.find(
+                  (servicio) =>
+                    servicio.id_servicio.toString() === idServicio
+                  )?.nombre
+                : 'Selecciona un servicio'
+              }
             </Text>
 
-            <ScrollView style={styles.listaServicios}>
-              {servicios.map((servicio) => (
-                <TouchableOpacity
-                  key={servicio.id_servicio}
-                  style={styles.opcionServicio}
-                  onPress={() => {
-                    setIdServicio(servicio.id_servicio.toString())
-                    setModalServiciosVisible(false)
-                  }}
-                >
-                  <Text style={styles.textoOpcion}>
-                    {servicio.nombre}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+            <Text style={styles.flechaSelector}>▼</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.botonCerrarModal}
-              onPress={() => setModalServiciosVisible(false)}
-            >
-              <Text style={styles.textoBotonCerrar}>Cerrar</Text>
-            </TouchableOpacity>
+          <CampoFormulario
+            label='Fecha'
+            placeholder='AAAA-MM-DD'
+            value={fechaCita}
+            onChangeText={(texto) =>
+              actualizarCampo(texto, setFechaCita, setError)
+            }
+          />
+
+          <CampoFormulario
+            label='Hora'
+            placeholder='HH:MM'
+            value={horaCita}
+            onChangeText={(texto) =>
+              actualizarCampo(texto, setHoraCita, setError)
+            }
+          />
+
+          <CampoFormulario
+            label='Especialista'
+            placeholder='Nombre del especialista'
+            value={especialistaCita}
+            onChangeText={(texto) =>
+              actualizarCampo(texto, setEspecialistaCita, setError)
+            }
+          />
+
+          {error && <MensajeError mensaje={error} />}
+
+          <View style={styles.contenedorBoton}>
+            <Boton
+              texto='Agendar'
+              onPress={guardarCita}
+            />
           </View>
-        </View>
-      </Modal>
 
-    </KeyboardAvoidingView>
+        </ScrollView>
+
+        <Modal
+          visible={modalServiciosVisible}
+          transparent
+          animationType='fade'
+          onRequestClose={() => setModalServiciosVisible(false)}
+        >
+          <View style={styles.fondoModal}>
+            <View style={styles.modalServicios}>
+              <Text style={styles.tituloModal}>
+                Selecciona un servicio
+              </Text>
+
+              <ScrollView style={styles.listaServicios}>
+                {servicios.map((servicio) => (
+                  <TouchableOpacity
+                    key={servicio.id_servicio}
+                    style={styles.opcionServicio}
+                    onPress={() => {
+                      setIdServicio(servicio.id_servicio.toString())
+                      setModalServiciosVisible(false)
+                    }}
+                  >
+                    <View style={styles.filaServicio}>
+                      <Text style={styles.textoOpcion}>
+                        {servicio.nombre}
+                      </Text>
+
+                      <Text style={styles.textoOpcion}>
+                        {formatearPrecio(servicio.costo)}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+
+              <TouchableOpacity
+                style={styles.botonCerrarModal}
+                onPress={() => setModalServiciosVisible(false)}
+              >
+                <Text style={styles.textoBotonCerrar}>Cerrar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        <ModalExito
+          visible={mostrarExito}
+          mensaje='Cita creada correctamente'
+          onClose={() => router.replace('/citas')}
+        />
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
-    alignItems: 'center',
     padding: 20,
+    paddingTop: 40,
     paddingBottom: 100,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-    color: '#E42BB8'
-  },
-  error: {
-    marginBottom: 15,
-    color: 'red'
   },
   selectorServicio: {
     width: '100%',
@@ -278,6 +287,18 @@ const styles = StyleSheet.create({
     maxHeight: 300,
   },
   keyboardView: {
+    flex: 1,
+    backgroundColor: '#FCE3EE'
+  },
+  filaServicio: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  contenedorBoton: {
+    marginTop: 30
+  },
+  safeArea: {
     flex: 1,
     backgroundColor: '#FCE3EE'
   }

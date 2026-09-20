@@ -1,51 +1,70 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { BackHandler, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Boton from '@/components/Boton';
+import { useFocusEffect } from 'expo-router';
+import { useCallback } from 'react';
+import Header from '@/components/Header';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const HomeScreen = () => {
 
   // Elimina el token almacenado y vuelve a la pantalla de inicio.
   const cerrarSesion = async () => {
     await AsyncStorage.removeItem('token');
+    router.dismissAll();
     router.replace('/');
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => true;
+
+      const subscription = BackHandler.addEventListener(
+        'hardwareBackPress',
+        onBackPress
+      );
+
+      return () => subscription.remove();
+    }, [])
+  );
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Cejas y uñas</Text>
-      <Boton
-        texto='Ver mis citas'
-        onPress={() => router.push('/citas')}
-      />
+    <SafeAreaView style={styles.container}>
+      <Header titulo='Inicio'/>
 
-      <Boton
-        texto='Nueva cita'
-        onPress={() => router.push('/crear-cita')}
-      />
+      <View style={styles.contenido}>
 
-      <Boton
-        texto='Cerrar sesión'
-        onPress={cerrarSesion}
-      />
+        <Boton
+          texto='Ver mis citas'
+          onPress={() => router.push('/citas')}
+        />
 
-    </View>
+        <Boton
+          texto='Nueva cita'
+          onPress={() => router.push('/crear-cita')}
+        />
+
+        <Boton
+          texto='Cerrar sesión'
+          onPress={cerrarSesion}
+        />
+      </View>
+
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    gap: 20,
     backgroundColor: '#FCE3EE'
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#E42BB8'
+  contenido: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+    gap: 15
   }
 });
 

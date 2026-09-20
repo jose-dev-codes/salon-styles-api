@@ -41,3 +41,7 @@ export const formatearHora = (hora: string) => {
 export const formatearFecha = (fecha: string) => {
   return fecha.split('T')[0];
 };
+
+export const formatearPrecio = (precio: string | number) => {
+  return `$${Number(precio).toLocaleString('es-CO')}`;
+};

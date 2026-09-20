@@ -2,14 +2,22 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 type BotonProps = {
   texto: string,
-  onPress: () => void
+  onPress: () => void,
+  flex?: number,
+  borderRadius?: number
 };
 
 // Componente reutilizable para mostrar botones de la aplicación.
-const Boton = ({ texto, onPress }: BotonProps) => {
+const Boton = ({ texto, onPress, flex, borderRadius = 18 }: BotonProps) => {
   return (
     <TouchableOpacity
-      style={styles.boton}
+      style={[
+        styles.boton,
+        {
+          flex,
+          borderRadius
+        }
+      ]}
       onPress={onPress}
     >
       <Text style={styles.textoBoton}>{texto}</Text>
@@ -22,7 +30,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#E42BB8',
     paddingVertical: 12,
     paddingHorizontal: 25,
-    borderRadius: 8,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -34,7 +41,8 @@ const styles = StyleSheet.create({
   },
   textoBoton: {
     color: '#FFFFFF',
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '600',
     textAlign: 'center'
   }
 });

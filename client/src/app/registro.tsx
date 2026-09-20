@@ -1,8 +1,8 @@
 import {
-  Alert,
   StyleSheet,
   Text,
   ScrollView,
+  View,
   KeyboardAvoidingView
 } from 'react-native';
 
@@ -19,7 +19,10 @@ import { validarRegistro } from '@/validators/usuarioValidator';
 
 import Boton from '@/components/Boton';
 import CampoFormulario from '@/components/campoFormulario';
-
+import ModalExito from '@/components/ModalExito';
+import MensajeError from '@/components/MensajeError';
+import Header from '@/components/Header';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const RegistroScreen = () => {
   const [nombresUsuario, setNombresUsuario] = useState('');
@@ -28,6 +31,7 @@ const RegistroScreen = () => {
   const [contrasenaUsuario, setContrasenaUsuario] = useState('');
   const [numeroTelefonoUsuario, setNumeroTelefonoUsuario] = useState('');
   const [fechaNacimientoUsuario, setFechaNacimientoUsuario] = useState('');
+  const [mostrarExito, setMostrarExito] = useState(false);
   const [error, setError] = useState('');
 
   const limpiarFormulario = () => {
@@ -83,16 +87,8 @@ const RegistroScreen = () => {
 
       limpiarFormulario();
 
-      Alert.alert(
-        'Exito',
-        'Usuario registrado correctamente!',
-        [
-          {
-            text: 'aceptar',
-            onPress: () => router.replace('/login')
-          }
-        ]
-      );
+      setMostrarExito(true);
+
     } catch (error) {
       console.error('Error al conectar con el servidor', error);
       setError('No se pudo conectar con el servidor.');
@@ -101,82 +97,94 @@ const RegistroScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.keyboardView}
-      behavior="padding"
-    >
-      <ScrollView
-        contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps="handled"
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        style={styles.keyboardView}
+        behavior="padding"
       >
-        <Text style={styles.title}>Registro</Text>
+        <Header titulo='Registro' />
 
-        <CampoFormulario
-          label='Nombres'
-          placeholder='Escribe tu nombre'
-          value={nombresUsuario}
-          onChangeText={(texto) =>
-            actualizarCampo(texto, setNombresUsuario, setError)
-          }
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
+        >
+
+          <CampoFormulario
+            label='Nombres'
+            placeholder='Escribe tu nombre'
+            value={nombresUsuario}
+            onChangeText={(texto) =>
+              actualizarCampo(texto, setNombresUsuario, setError)
+            }
+          />
+
+          <CampoFormulario
+            label='Apellidos'
+            placeholder='Escribe tu apellido'
+            value={apellidosUsuario}
+            onChangeText={(texto) =>
+              actualizarCampo(texto, setApellidosUsuario, setError)
+            }
+          />
+
+          <CampoFormulario
+            label='Correo'
+            placeholder='ejemplo@correo.com'
+            value={correoUsuario}
+            keyboardType='email-address'
+            autoCapitalize='none'
+            onChangeText={(texto) =>
+              actualizarCampo(texto, setCorreoUsuario, setError)
+            }
+          />
+
+          <CampoFormulario
+            label='Contraseña'
+            placeholder='Escribe tu contraseña'
+            value={contrasenaUsuario}
+            secureTextEntry
+            onChangeText={(texto) =>
+              actualizarCampo(texto, setContrasenaUsuario, setError)
+            }
+          />
+
+          <CampoFormulario
+            label='Número de teléfono'
+            placeholder='Ej: 3001123456'
+            value={numeroTelefonoUsuario}
+            onChangeText={(texto) =>
+              actualizarCampo(texto, setNumeroTelefonoUsuario, setError)
+            }
+          />
+
+          <CampoFormulario
+            label='Fecha de nacimiento'
+            placeholder='AAAA-MM-DD'
+            value={fechaNacimientoUsuario}
+            onChangeText={(texto) =>
+              actualizarCampo(texto, setFechaNacimientoUsuario, setError)
+            }
+          />
+
+          {error && <MensajeError mensaje={error} />}
+
+          <View style={styles.buttonContainer}>
+            <Boton
+              texto='Registrarse'
+              onPress={guardarInformacion}
+            />
+          </View>
+
+        </ScrollView>
+
+        <ModalExito
+          visible={mostrarExito}
+          mensaje='Usuario registrado correctamente'
+          onClose={() => router.replace('/login')}
         />
 
-        <CampoFormulario
-          label='Apellidos'
-          placeholder='Escribe tu apellido'
-          value={apellidosUsuario}
-          onChangeText={(texto) =>
-            actualizarCampo(texto, setApellidosUsuario, setError)
-          }
-        />
-
-        <CampoFormulario
-          label='Correo'
-          placeholder='ejemplo@correo.com'
-          value={correoUsuario}
-          keyboardType='email-address'
-          autoCapitalize='none'
-          onChangeText={(texto) =>
-            actualizarCampo(texto, setCorreoUsuario, setError)
-          }
-        />
-
-        <CampoFormulario
-          label='Contraseña'
-          placeholder='Escribe tu contraseña'
-          value={contrasenaUsuario}
-          secureTextEntry
-          onChangeText={(texto) =>
-            actualizarCampo(texto, setContrasenaUsuario, setError)
-          }
-        />
-
-        <CampoFormulario
-          label='Número de teléfono'
-          placeholder='Ej: 3001123456'
-          value={numeroTelefonoUsuario}
-          onChangeText={(texto) =>
-            actualizarCampo(texto, setNumeroTelefonoUsuario, setError)
-          }
-        />
-
-        <CampoFormulario
-          label='Fecha de nacimiento'
-          placeholder='AAAA-MM-DD'
-          value={fechaNacimientoUsuario}
-          onChangeText={(texto) =>
-            actualizarCampo(texto, setFechaNacimientoUsuario, setError)
-          }
-        />
-
-        {error && <Text style={styles.error}>{error}</Text>}
-
-        <Boton
-          texto='Registrarse'
-          onPress={guardarInformacion}
-        />
-
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 
 };
@@ -185,21 +193,18 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
+    paddingTop: 40,
     justifyContent: 'center',
     paddingBottom: 100
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 30,
-    textAlign: 'center',
-    color: '#E42BB8'
-  },
-  error: {
-    marginBottom: 15,
-    color: 'red'
-  },
   keyboardView: {
+    flex: 1,
+    backgroundColor: '#FCE3EE'
+  },
+  buttonContainer: {
+    marginTop: 30
+  },
+  safeArea: {
     flex: 1,
     backgroundColor: '#FCE3EE'
   }

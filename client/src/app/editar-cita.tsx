@@ -2,7 +2,8 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   Text,
-  ScrollView
+  ScrollView,
+  View
 } from 'react-native';
 
 import {
@@ -19,12 +20,17 @@ import { actualizarCita } from '@/services/citaService';
 import { validarCita } from '@/validators/citaValidator';
 import Boton from '@/components/Boton';
 import CampoFormulario from '@/components/campoFormulario';
+import ModalExito from '@/components/ModalExito';
+import MensajeError from '@/components/MensajeError';
+import Header from '@/components/Header';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const EditarCitaScreen = () => {
   const [fechaCita, setFechaCita] = useState('');
   const [horaCita, setHoraCita] = useState('');
   const [especialistaCita, setEspecialistaCita] = useState('');
   const [error, setError] = useState('');
+  const [mostrarExito, setMostrarExito] = useState(false);
 
   const { id, fecha, hora, especialista } = useLocalSearchParams();
 
@@ -34,7 +40,7 @@ const EditarCitaScreen = () => {
     if (especialista) setEspecialistaCita(especialista.toString());
   }, [fecha, hora, especialista]);
 
-  // Envía los cambios al backend y vuelve a la lista si la actualización es exitosa.
+  // Envía los cambios al backend y muestra un mensaje si la actualización es exitosa.
   const guardarCambios = async () => {
     limpiarError(setError);
 
@@ -68,7 +74,8 @@ const EditarCitaScreen = () => {
         return;
       }
 
-      router.back();
+      setMostrarExito(true);
+
     } catch (error) {
       console.error('Error al conectar con el servidor', error);
       setError('No se pudo conectar con el servidor');
@@ -76,75 +83,83 @@ const EditarCitaScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.keyboardView}
-      behavior='padding'
-    >
-      <ScrollView
-        contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps="handled"
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        style={styles.keyboardView}
+        behavior='padding'
       >
-        <Text style={styles.title}>Editar cita</Text>
+        <Header titulo='Editar cita' />
 
-        <CampoFormulario
-          label='Fecha'
-          placeholder='AAAA-MM-DD'
-          value={fechaCita}
-          onChangeText={(texto) =>
-            actualizarCampo(texto, setFechaCita, setError)
-          }
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
+        >
+
+          <CampoFormulario
+            label='Fecha'
+            placeholder='AAAA-MM-DD'
+            value={fechaCita}
+            onChangeText={(texto) =>
+              actualizarCampo(texto, setFechaCita, setError)
+            }
+          />
+
+          <CampoFormulario
+            label='Hora'
+            placeholder='HH:MM'
+            value={horaCita}
+            onChangeText={(texto) =>
+              actualizarCampo(texto, setHoraCita, setError)
+            }
+          />
+
+          <CampoFormulario
+            label='Especialista'
+            placeholder='Nombre del especialista'
+            value={especialistaCita}
+            onChangeText={(texto) =>
+              actualizarCampo(texto, setEspecialistaCita, setError)
+            }
+          />
+
+          {error && <MensajeError mensaje={error} />}
+
+          <View style={styles.contenedorBoton}>
+            <Boton
+              texto='Guardar cambios'
+              onPress={guardarCambios}
+            />
+          </View>
+
+        </ScrollView>
+
+        <ModalExito
+          visible={mostrarExito}
+          mensaje='Cita actualizada correctamente'
+          onClose={() => router.back()}
         />
-
-        <CampoFormulario
-          label='Hora'
-          placeholder='HH:MM'
-          value={horaCita}
-          onChangeText={(texto) =>
-            actualizarCampo(texto, setHoraCita, setError)
-          }
-        />
-
-        <CampoFormulario
-          label='Especialista'
-          placeholder='Nombre del especialista'
-          value={especialistaCita}
-          onChangeText={(texto) =>
-            actualizarCampo(texto, setEspecialistaCita, setError)
-          }
-        />
-
-        {error && (<Text style={styles.error}>{error}</Text>)}
-
-        <Boton
-          texto='Guardar cambios'
-          onPress={guardarCambios}
-        />
-
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-    color: '#E42BB8'
-  },
-  error: {
-    marginBottom: 15,
-    color: 'red'
+    padding: 20,
+    paddingTop: 40,
+    paddingBottom: 100
   },
   keyboardView: {
     flex: 1,
     backgroundColor: '#FCE3EE'
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#FCE3EE'
+  },
+  contenedorBoton: {
+    marginTop: 30
   }
 });
 

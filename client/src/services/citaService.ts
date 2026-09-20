@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../../config/api';
+import { verificarSesion } from './sesionService';
 
 // Obtiene las citas del usuario autenticado mediante una solicitud al backend.
 export const obtenerMisCitas = async () => {
@@ -18,6 +19,12 @@ export const obtenerMisCitas = async () => {
       }
     }
   );
+
+  const sesionValida = await verificarSesion(respuesta);
+
+  if (!sesionValida) {
+    return null;
+  }
 
   const datos = await respuesta.json();
 
@@ -44,6 +51,12 @@ export const obtenerServicios = async () => {
       }
     }
   );
+
+  const sesionValida = await verificarSesion(respuesta);
+
+  if (!sesionValida) {
+    return null;
+  }
 
   const datos = await respuesta.json();
 
@@ -83,6 +96,12 @@ export const crearCita = async(
     }
   );
 
+  const sesionValida = await verificarSesion(respuesta);
+
+  if (!sesionValida) {
+    return null;
+  }
+
   const datos = await respuesta.json();
 
   return {
@@ -120,6 +139,12 @@ export const actualizarCita = async (
     }
   );
 
+  const sesionValida = await verificarSesion(respuesta);
+
+  if (!sesionValida) {
+    return null;
+  }
+
   const datos = await respuesta.json();
 
   return {
@@ -145,6 +170,12 @@ export const cancelarCita = async (id: string) => {
       }
     }
   );
+
+  const sesionValida = await verificarSesion(respuesta);
+
+  if (!sesionValida) {
+    return null;
+  }
 
   const datos = await respuesta.json();
 
