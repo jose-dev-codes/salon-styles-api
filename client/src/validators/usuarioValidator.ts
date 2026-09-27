@@ -22,7 +22,7 @@ export const validarRegistro = (
   const camposVacios = campos.filter(campo => !campo.trim()).length;
 
   if (camposVacios === campos.length) {
-    return 'Por favor, completa todos los campos';
+    return 'Por favor, completa todos los campos.';
   }
 
   const regexNombre = /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü]+(?:[ '][A-Za-zÁÉÍÓÚáéíóúÑñÜü]+)*$/;
@@ -32,15 +32,15 @@ export const validarRegistro = (
   const requisitosNombres: Requisito[] = [
     {
       condicion: nombres.trim().length > 0,
-      mensaje: 'Los nombres son obligatorios'
+      mensaje: 'Los nombres son obligatorios.'
     },
     {
       condicion:  nombres.length >= 2 && nombres.length <= 50,
-      mensaje: 'Los nombres deben tener entre 2 y 50 caracteres'
+      mensaje: 'Los nombres deben tener entre 2 y 50 caracteres.'
     },
     {
       condicion: regexNombre.test(nombres),
-      mensaje: 'Los nombres solo pueden contener letras'
+      mensaje: 'Los nombres solo pueden contener letras.'
     }
   ];
 
@@ -52,15 +52,15 @@ export const validarRegistro = (
   const requisitosApellidos: Requisito[] = [
     {
       condicion: apellidos.trim().length > 0,
-      mensaje: 'Los apellidos son obligatorios'
+      mensaje: 'Los apellidos son obligatorios.'
     },
     {
       condicion: apellidos.length >= 2 && apellidos.length <= 50,
-      mensaje: 'Los apellidos deben tener entre 2 y 50 caracteres'
+      mensaje: 'Los apellidos deben tener entre 2 y 50 caracteres.'
     },
     {
       condicion: regexNombre.test(apellidos),
-      mensaje: 'Los apellidos solo pueden contener letras'
+      mensaje: 'Los apellidos solo pueden contener letras.'
     }
   ];
 
@@ -72,15 +72,15 @@ export const validarRegistro = (
   const requisitosCorreo: Requisito[] = [
     {
       condicion: correo.trim().length > 0,
-      mensaje: 'El correo es obligatorio'
+      mensaje: 'El correo es obligatorio.'
     },
     {
       condicion: correo.length <= 100,
-      mensaje: 'El correo no puede superar los 100 caracteres'
+      mensaje: 'El correo no puede superar los 100 caracteres.'
     },
     {
       condicion: regexCorreo.test(correo),
-      mensaje: 'Ingresa un correo válido'
+      mensaje: 'Ingresa un correo válido.'
     }
   ];
 
@@ -93,19 +93,19 @@ export const validarRegistro = (
 
     {
       condicion: numeroTelefono.trim().length > 0,
-      mensaje: 'El teléfono es obligatorio'
+      mensaje: 'El teléfono es obligatorio.'
     },
     {
       condicion: numeroTelefono.length >= 10,
-      mensaje: 'El teléfono debe tener al menos 10 dígitos'
+      mensaje: 'El teléfono debe tener al menos 10 dígitos.'
     },
     {
       condicion: numeroTelefono.length <= 15,
-      mensaje: 'El teléfono no puede superar los 15 dígitos'
+      mensaje: 'El teléfono no puede superar los 15 dígitos.'
     },
     {
       condicion: /^[0-9]+$/.test(numeroTelefono),
-      mensaje: 'El teléfono solo debe contener números'
+      mensaje: 'El teléfono solo debe contener números.'
     },
   ];
 
@@ -117,11 +117,11 @@ export const validarRegistro = (
   const requisitosFecha: Requisito[] = [
     {
       condicion: fechaNacimiento.trim().length > 0,
-      mensaje: 'La fecha de nacimiento es obligatoria'
+      mensaje: 'La fecha de nacimiento es obligatoria.'
     },
     {
       condicion: /^\d{4}-\d{2}-\d{2}$/.test(fechaNacimiento),
-      mensaje: 'La fecha debe tener el formato AAAA-MM-DD'
+      mensaje: 'La fecha debe tener el formato AAAA-MM-DD.'
     }
   ];
 
@@ -133,31 +133,31 @@ export const validarRegistro = (
   const requisitosContrasena: Requisito[] = [
     {
       condicion: contrasena.trim().length > 0,
-      mensaje: 'La contraseña es obligatoria'
+      mensaje: 'La contraseña es obligatoria.'
     },
     {
       condicion: contrasena.length >= 6,
-      mensaje: 'La contraseña debe tener al menos 6 caracteres'
+      mensaje: 'La contraseña debe tener al menos 6 caracteres.'
     },
     {
       condicion: /[A-Z]/.test(contrasena),
-      mensaje: 'La contraseña debe tener al menos una mayúscula'
+      mensaje: 'La contraseña debe tener al menos una mayúscula.'
     },
     {
       condicion: /[a-z]/.test(contrasena),
-      mensaje: 'La contraseña debe tener al menos una minúscula'
+      mensaje: 'La contraseña debe tener al menos una minúscula.'
     },
     {
       condicion: /\d/.test(contrasena),
-      mensaje: 'La contraseña debe tener al menos un número'
+      mensaje: 'La contraseña debe tener al menos un número.'
     },
     {
       condicion: /[^A-Za-z0-9\s]/.test(contrasena),
-      mensaje: 'La contraseña debe tener al menos un caracter especial'
+      mensaje: 'La contraseña debe tener al menos un caracter especial.'
     },
     {
       condicion: !/\s/.test(contrasena),
-      mensaje: 'La contraseña no debe contener espacios'
+      mensaje: 'La contraseña no debe contener espacios.'
     }
   ];
 

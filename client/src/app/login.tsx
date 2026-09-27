@@ -2,7 +2,6 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   ScrollView,
-  Text,
   View
 } from 'react-native';
 
@@ -18,15 +17,16 @@ import {
 } from '@/utils/formularioUtils';
 
 import Boton from '@/components/Boton';
-import CampoFormulario from '@/components/campoFormulario';
+import CampoFormulario from '@/components/CampoFormulario';
 import MensajeError from '@/components/MensajeError';
-import Header from '@/components/Header';
+import Encabezado from '@/components/Encabezado';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const LoginScreen = () => {
+const PantallaLogin = () => {
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [error, setError] = useState('');
+  const [alturaEncabezado, setAlturaEncabezado] = useState(0);
 
   const manejarInicioSesion = async () => {
     const datosLimpios = limpiarCampos({
@@ -61,21 +61,32 @@ const LoginScreen = () => {
       router.replace('/home');
 
     } catch (error) {
-      console.error('Error al conectar con el servidor', error);
-      setError('No se pudo conectar con el servidor');
+      console.error('Error al conectar con el servidor.', error);
+      setError('No se pudo conectar con el servidor.');
     }
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.areaSegura}>
       <KeyboardAvoidingView
-        style={styles.keyboardView}
+        style={styles.vistaTeclado}
         behavior='padding'
       >
-        <Header titulo='Inicio de sesión' />
+        <View
+          style={styles.encabezado}
+          onLayout={(evento) =>
+            setAlturaEncabezado(evento.nativeEvent.layout.height)
+          }
+        >
+          <Encabezado titulo='Inicio de sesión' />
+        </View>
 
         <ScrollView
-          contentContainerStyle={styles.container}
+          style={{
+            paddingTop: alturaEncabezado + 40,
+            marginTop: 5
+          }}
+          contentContainerStyle={styles.contenedor}
           keyboardShouldPersistTaps="handled"
         >
 
@@ -85,6 +96,7 @@ const LoginScreen = () => {
             value={correo}
             keyboardType='email-address'
             autoCapitalize='none'
+            icono='email-outline'
             onChangeText={(texto) =>
               actualizarCampo(texto, setCorreo, setError)
             }
@@ -95,6 +107,7 @@ const LoginScreen = () => {
             placeholder='Ingresa tu contraseña'
             value={contrasena}
             secureTextEntry
+            icono='lock-outline'
             onChangeText={(texto) =>
               actualizarCampo(texto, setContrasena, setError)
             }
@@ -102,7 +115,7 @@ const LoginScreen = () => {
 
           {error && <MensajeError mensaje={error} />}
 
-          <View style={styles.buttonContainer}>
+          <View style={styles.contenedorBotones}>
 
             <Boton
               texto='Iniciar sesión'
@@ -122,24 +135,30 @@ const LoginScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  contenedor: {
     flexGrow: 1,
-    padding: 20,
-    paddingTop: 40,
+    paddingHorizontal: 20,
     paddingBottom: 100
   },
-  buttonContainer: {
+  contenedorBotones: {
     gap: 15,
     marginTop: 30
   },
-  keyboardView: {
+  vistaTeclado: {
     flex: 1,
     backgroundColor: '#FCE3EE'
   },
-  safeArea: {
+  areaSegura: {
     flex: 1,
     backgroundColor: '#FCE3EE'
+  },
+  encabezado: {
+    position: 'absolute',
+    top: 5,
+    left: 0,
+    right: 0,
+    zIndex: 1
   }
 });
 
-export default LoginScreen;
+export default PantallaLogin;

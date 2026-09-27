@@ -3,8 +3,10 @@ import { router } from 'expo-router';
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Boton from '@/components/Boton';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const IndexScreen = () => {
+const PantallaInicio = () => {
   const [sesionActiva, setSesionActiva] = useState(false);
   const [verificandoSesion, setVerificandoSesion] = useState(true);
 
@@ -25,11 +27,19 @@ const IndexScreen = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.contenedor}>
       {!verificandoSesion && (
         <>
-          <Text style={styles.title}>Bienvenido a Cejas y uñas</Text>
-          <Text style={styles.subtitle}>Reserva tu cita de belleza</Text>
+          <View style={styles.circuloIcono}>
+            <MaterialCommunityIcons
+              name='content-cut'
+              size={50}
+              color='#FFFFFF'
+            />
+          </View>
+
+          <Text style={styles.titulo}>Cejas y Uñas</Text>
+          <Text style={styles.subtitulo}>Tu belleza, nuestra pasión</Text>
 
           {!sesionActiva && (
             <View style={styles.botones}>
@@ -41,38 +51,51 @@ const IndexScreen = () => {
               <Boton
                 texto='Registrarse'
                 onPress={() => router.push('/registro')}
+                variante='secundario'
               />
 
             </View>
           )}
         </>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  contenedor: {
     flex: 1,
     justifyContent: 'center',
     padding: 20,
     backgroundColor: '#FCE3EE'
   },
-  title: {
+  titulo: {
     fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#E42BB8'
   },
-  subtitle: {
-    marginTop: 15,
-    marginBottom: 20,
+  subtitulo: {
+    marginTop: 5,
+    marginBottom: 30,
     fontSize: 16,
-    textAlign: 'center'
+    color: '#8F1568',
+    textAlign: 'center',
+    fontWeight: '600'
   },
   botones: {
     gap: 15
+  },
+  circuloIcono: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#E42BB8',
+    height: 100,
+    width: 100,
+    borderRadius: 100,
+    marginBottom: 10
   }
 });
 
-export default IndexScreen;
+export default PantallaInicio;

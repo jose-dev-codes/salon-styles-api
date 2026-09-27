@@ -1,6 +1,5 @@
 import {
   StyleSheet,
-  Text,
   ScrollView,
   View,
   KeyboardAvoidingView
@@ -18,13 +17,13 @@ import { registrarUsuario } from '@/services/usuarioService';
 import { validarRegistro } from '@/validators/usuarioValidator';
 
 import Boton from '@/components/Boton';
-import CampoFormulario from '@/components/campoFormulario';
+import CampoFormulario from '@/components/CampoFormulario';
 import ModalExito from '@/components/ModalExito';
 import MensajeError from '@/components/MensajeError';
-import Header from '@/components/Header';
+import Encabezado from '@/components/Encabezado';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const RegistroScreen = () => {
+const PantallaRegistro = () => {
   const [nombresUsuario, setNombresUsuario] = useState('');
   const [apellidosUsuario, setApellidosUsuario] = useState('');
   const [correoUsuario, setCorreoUsuario] = useState('');
@@ -33,6 +32,7 @@ const RegistroScreen = () => {
   const [fechaNacimientoUsuario, setFechaNacimientoUsuario] = useState('');
   const [mostrarExito, setMostrarExito] = useState(false);
   const [error, setError] = useState('');
+  const [alturaEncabezado, setAlturaEncabezado] = useState(0);
 
   const limpiarFormulario = () => {
     setNombresUsuario('');
@@ -90,29 +90,41 @@ const RegistroScreen = () => {
       setMostrarExito(true);
 
     } catch (error) {
-      console.error('Error al conectar con el servidor', error);
+      console.error('Error al conectar con el servidor.', error);
       setError('No se pudo conectar con el servidor.');
     }
 
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.areaSegura}>
       <KeyboardAvoidingView
-        style={styles.keyboardView}
+        style={styles.vistaTeclado}
         behavior="padding"
       >
-        <Header titulo='Registro' />
+        <View
+          style={styles.encabezado}
+          onLayout={(evento =>
+            setAlturaEncabezado(evento.nativeEvent.layout.height))
+          }
+        >
+          <Encabezado titulo='Registro' />
+        </View>
 
         <ScrollView
-          contentContainerStyle={styles.container}
+          style={{
+            paddingTop: alturaEncabezado + 40,
+            marginTop: 5
+          }}
+          contentContainerStyle={styles.contenedor}
           keyboardShouldPersistTaps="handled"
         >
 
           <CampoFormulario
             label='Nombres'
-            placeholder='Escribe tu nombre'
+            placeholder='Escribe tus nombres'
             value={nombresUsuario}
+            icono='account-outline'
             onChangeText={(texto) =>
               actualizarCampo(texto, setNombresUsuario, setError)
             }
@@ -120,8 +132,9 @@ const RegistroScreen = () => {
 
           <CampoFormulario
             label='Apellidos'
-            placeholder='Escribe tu apellido'
+            placeholder='Escribe tus apellidos'
             value={apellidosUsuario}
+            icono='account-multiple-outline'
             onChangeText={(texto) =>
               actualizarCampo(texto, setApellidosUsuario, setError)
             }
@@ -133,6 +146,7 @@ const RegistroScreen = () => {
             value={correoUsuario}
             keyboardType='email-address'
             autoCapitalize='none'
+            icono='email-outline'
             onChangeText={(texto) =>
               actualizarCampo(texto, setCorreoUsuario, setError)
             }
@@ -143,6 +157,7 @@ const RegistroScreen = () => {
             placeholder='Escribe tu contraseña'
             value={contrasenaUsuario}
             secureTextEntry
+            icono='lock-outline'
             onChangeText={(texto) =>
               actualizarCampo(texto, setContrasenaUsuario, setError)
             }
@@ -152,6 +167,7 @@ const RegistroScreen = () => {
             label='Número de teléfono'
             placeholder='Ej: 3001123456'
             value={numeroTelefonoUsuario}
+            icono='phone-outline'
             onChangeText={(texto) =>
               actualizarCampo(texto, setNumeroTelefonoUsuario, setError)
             }
@@ -161,6 +177,7 @@ const RegistroScreen = () => {
             label='Fecha de nacimiento'
             placeholder='AAAA-MM-DD'
             value={fechaNacimientoUsuario}
+            icono='calendar-outline'
             onChangeText={(texto) =>
               actualizarCampo(texto, setFechaNacimientoUsuario, setError)
             }
@@ -168,7 +185,7 @@ const RegistroScreen = () => {
 
           {error && <MensajeError mensaje={error} />}
 
-          <View style={styles.buttonContainer}>
+          <View style={styles.contenedorBotones}>
             <Boton
               texto='Registrarse'
               onPress={guardarInformacion}
@@ -179,7 +196,7 @@ const RegistroScreen = () => {
 
         <ModalExito
           visible={mostrarExito}
-          mensaje='Usuario registrado correctamente'
+          mensaje='Usuario registrado correctamente.'
           onClose={() => router.replace('/login')}
         />
 
@@ -190,24 +207,30 @@ const RegistroScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  contenedor: {
     flexGrow: 1,
-    padding: 20,
-    paddingTop: 40,
     justifyContent: 'center',
-    paddingBottom: 100
+    paddingHorizontal: 20,
+    paddingBottom: 120
   },
-  keyboardView: {
+  vistaTeclado: {
     flex: 1,
     backgroundColor: '#FCE3EE'
   },
-  buttonContainer: {
+  contenedorBotones: {
     marginTop: 30
   },
-  safeArea: {
+  areaSegura: {
     flex: 1,
     backgroundColor: '#FCE3EE'
+  },
+  encabezado: {
+    position: 'absolute',
+    top: 5,
+    left: 0,
+    right: 0,
+    zIndex: 1
   }
 });
 
-export default RegistroScreen;
+export default PantallaRegistro;

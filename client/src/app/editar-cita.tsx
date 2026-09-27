@@ -1,7 +1,6 @@
 import {
   KeyboardAvoidingView,
   StyleSheet,
-  Text,
   ScrollView,
   View
 } from 'react-native';
@@ -19,18 +18,19 @@ import { useEffect, useState } from 'react';
 import { actualizarCita } from '@/services/citaService';
 import { validarCita } from '@/validators/citaValidator';
 import Boton from '@/components/Boton';
-import CampoFormulario from '@/components/campoFormulario';
+import CampoFormulario from '@/components/CampoFormulario';
 import ModalExito from '@/components/ModalExito';
 import MensajeError from '@/components/MensajeError';
-import Header from '@/components/Header';
+import Encabezado from '@/components/Encabezado';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const EditarCitaScreen = () => {
+const PantallaEditarCita = () => {
   const [fechaCita, setFechaCita] = useState('');
   const [horaCita, setHoraCita] = useState('');
   const [especialistaCita, setEspecialistaCita] = useState('');
   const [error, setError] = useState('');
   const [mostrarExito, setMostrarExito] = useState(false);
+  const [alturaEncabezado, setAlturaEncabezado] = useState(0);
 
   const { id, fecha, hora, especialista } = useLocalSearchParams();
 
@@ -77,21 +77,32 @@ const EditarCitaScreen = () => {
       setMostrarExito(true);
 
     } catch (error) {
-      console.error('Error al conectar con el servidor', error);
-      setError('No se pudo conectar con el servidor');
+      console.error('Error al conectar con el servidor.', error);
+      setError('No se pudo conectar con el servidor.');
     }
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.areaSegura}>
       <KeyboardAvoidingView
-        style={styles.keyboardView}
+        style={styles.vistaTeclado}
         behavior='padding'
       >
-        <Header titulo='Editar cita' />
+        <View
+          style={styles.encabezado}
+          onLayout={(evento) =>
+            setAlturaEncabezado(evento.nativeEvent.layout.height)
+          }
+        >
+          <Encabezado titulo='Editar cita' />
+        </View>
 
         <ScrollView
-          contentContainerStyle={styles.container}
+          style={{
+            paddingTop: alturaEncabezado + 40,
+            marginTop: 5
+          }}
+          contentContainerStyle={styles.contenedor}
           keyboardShouldPersistTaps="handled"
         >
 
@@ -99,6 +110,7 @@ const EditarCitaScreen = () => {
             label='Fecha'
             placeholder='AAAA-MM-DD'
             value={fechaCita}
+            icono='calendar-outline'
             onChangeText={(texto) =>
               actualizarCampo(texto, setFechaCita, setError)
             }
@@ -108,6 +120,7 @@ const EditarCitaScreen = () => {
             label='Hora'
             placeholder='HH:MM'
             value={horaCita}
+            icono='clock-outline'
             onChangeText={(texto) =>
               actualizarCampo(texto, setHoraCita, setError)
             }
@@ -117,6 +130,7 @@ const EditarCitaScreen = () => {
             label='Especialista'
             placeholder='Nombre del especialista'
             value={especialistaCita}
+            icono='account-outline'
             onChangeText={(texto) =>
               actualizarCampo(texto, setEspecialistaCita, setError)
             }
@@ -135,7 +149,7 @@ const EditarCitaScreen = () => {
 
         <ModalExito
           visible={mostrarExito}
-          mensaje='Cita actualizada correctamente'
+          mensaje='Cita actualizada correctamente.'
           onClose={() => router.back()}
         />
       </KeyboardAvoidingView>
@@ -144,23 +158,29 @@ const EditarCitaScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  contenedor: {
     justifyContent: 'center',
-    padding: 20,
-    paddingTop: 40,
+    paddingHorizontal: 20,
     paddingBottom: 100
   },
-  keyboardView: {
+  vistaTeclado: {
     flex: 1,
     backgroundColor: '#FCE3EE'
   },
-  safeArea: {
+  areaSegura: {
     flex: 1,
     backgroundColor: '#FCE3EE'
   },
   contenedorBoton: {
     marginTop: 30
+  },
+  encabezado: {
+    position: 'absolute',
+    top: 5,
+    left: 0,
+    right: 0,
+    zIndex: 1
   }
 });
 
-export default EditarCitaScreen;
+export default PantallaEditarCita;

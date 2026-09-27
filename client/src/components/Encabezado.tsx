@@ -1,25 +1,17 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-const Header = ({titulo}: {titulo: string}) => {
+const Encabezado = ({titulo}: {titulo: string}) => {
   return (
-    <View style={styles.containerHeader}>
-    <View style={styles.header}>
-      <Text style={styles.tituloHeader}>{titulo}</Text>
-    </View>
+    <View style={styles.encabezado}>
+      <Text style={styles.tituloEncabezado}>{titulo}</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  containerHeader: {
-    padding: 20,
-    paddingTop: 5,
-    paddingBottom: 0,
-    alignItems: 'center',
-    backgroundColor: '#FCE3EE'
-  },
-  header: {
-    width: '100%',
+  encabezado: {
+    marginHorizontal: 20,
+    alignSelf: 'stretch',
     backgroundColor: '#E42BB8',
     paddingVertical: 10,
     alignItems: 'center',
@@ -28,11 +20,11 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },
-  tituloHeader: {
+  tituloEncabezado: {
     color: '#FFFFFF',
     fontSize: 22,
     fontWeight: 'bold'
   }
 });
 
-export default Header;
+export default Encabezado;

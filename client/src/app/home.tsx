@@ -1,20 +1,12 @@
-import { BackHandler, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Boton from '@/components/Boton';
-import { useFocusEffect } from 'expo-router';
-import { useCallback } from 'react';
-import Header from '@/components/Header';
+import { BackHandler, StyleSheet, View, TouchableOpacity, Text } from 'react-native';
+import { useFocusEffect, router } from 'expo-router';
+import { useCallback, useState } from 'react';
+import Encabezado from '@/components/Encabezado';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BarraNavegacion from '@/components/BarraNavegacion';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomeScreen = () => {
-
-  // Elimina el token almacenado y vuelve a la pantalla de inicio.
-  const cerrarSesion = async () => {
-    await AsyncStorage.removeItem('token');
-    router.dismissAll();
-    router.replace('/');
-  };
 
   useFocusEffect(
     useCallback(() => {
@@ -29,28 +21,26 @@ const HomeScreen = () => {
     }, [])
   );
 
+  const cerrarSesion = async () => {
+    await AsyncStorage.removeItem('token');
+    router.dismissAll();
+    router.replace('/');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <Header titulo='Inicio'/>
+      <Encabezado titulo='Inicio'/>
 
       <View style={styles.contenido}>
-
-        <Boton
-          texto='Ver mis citas'
-          onPress={() => router.push('/citas')}
-        />
-
-        <Boton
-          texto='Nueva cita'
-          onPress={() => router.push('/crear-cita')}
-        />
-
-        <Boton
-          texto='Cerrar sesión'
+        <TouchableOpacity
+          style={styles.botonCerrar}
           onPress={cerrarSesion}
-        />
+        >
+          <Text style={styles.textoCerrar}>Cerrar sesión</Text>
+        </TouchableOpacity>
       </View>
 
+      <BarraNavegacion />
     </SafeAreaView>
   );
 };
@@ -63,8 +53,19 @@ const styles = StyleSheet.create({
   contenido: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20,
-    gap: 15
+    padding: 20
+  },
+  botonCerrar: {
+    backgroundColor: '#E42BB8',
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 12,
+    alignSelf: 'center'
+  },
+  textoCerrar: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 16
   }
 });
 
