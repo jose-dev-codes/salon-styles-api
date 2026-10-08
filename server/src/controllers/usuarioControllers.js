@@ -66,6 +66,29 @@ export const obtenerUsuarioPorId = async (req, res) => {
     }
 };
 
+export const obtenerPerfil = async (req, res) => {
+    try {
+
+        const resultado = await usuarioService.obtenerUsuarioPorId(
+            Number(req.usuario.id)
+        );
+
+        if (resultado.noEncontrado) {
+            return res.status(404).json({
+                error: "Usuario no encontrado."
+            });
+        }
+
+        return res.status(200).json(resultado);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: "Error al obtener el perfil."
+        });
+    }
+};
+
 export const eliminarUsuario = async (req, res) => {
     try {
         const resultado = await usuarioService.eliminarUsuario(

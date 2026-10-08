@@ -8,6 +8,11 @@ export const obtenerTodasLasCitas = (idUsuario) => {
     return citaModel.obtenerTodasLasCitas(idUsuario);
 };
 
+// Obtiene la próxima cita del usuario.
+export const obtenerProximaCita = async (idUsuario) => {
+    return await citaModel.obtenerProximaCita(idUsuario);
+};
+
 // Valida y crea una nueva cita.
 export const crearCita = async (datos) => {
     const { fecha, hora, especialista } = datos;

@@ -123,3 +123,32 @@ export const buscarCitaPorId = async (id) => {
 
     return result.rows[0] || null;
 };
+
+// Obtiene la próxima cita pendiente o confirmada del usuario.
+export const obtenerProximaCita = async (idUsuario) => {
+    const result = await pool.query(
+        `
+        SELECT
+            c.*,
+            s.nombre AS servicio,
+            s.costo AS precio
+        FROM citas c
+        JOIN servicios s
+            ON c.id_servicio = s.id_servicio
+        WHERE c.id_usuario = $1
+            AND c.estado IN ('pendiente', 'confirmada')
+            AND (
+                c.fecha > CURRENT_DATE
+                OR (
+                    c.fecha = CURRENT_DATE
+                    AND c.hora >= CURRENT_TIME
+                )
+            )
+        ORDER BY c.fecha ASC, c.hora ASC
+        LIMIT 1;
+        `,
+        [idUsuario]
+    );
+
+    return result.rows[0] || null;
+};

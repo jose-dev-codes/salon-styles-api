@@ -1,11 +1,15 @@
 // Importa los routers de los módulos de la aplicación.
 import express from "express";
+import cors from "cors";
 import citaRoute from "./routes/citaRoutes.js";
 import authRoute from "./routes/authRoutes.js";
 import usuarioRoute from "./routes/usuarioRoutes.js";
 import servicioRoute from "./routes/servicioRoutes.js";
 
 const app = express();
+
+// Permite solicitudes desde otros orígenes, como la aplicación web.
+app.use(cors());
 
 // Permite procesar solicitudes con cuerpo en formato JSON.
 app.use(express.json());

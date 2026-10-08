@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_URL } from '../../config/api';
+import API_URL from '../../config/api';
 import { verificarSesion } from './sesionService';
 
 // Obtiene las citas del usuario autenticado mediante una solicitud al backend.
@@ -12,6 +12,38 @@ export const obtenerMisCitas = async () => {
 
   const respuesta = await fetch(
     `${API_URL}/citas`,
+    {
+      method: 'GET',
+      headers: {
+        'Authorization': token
+      }
+    }
+  );
+
+  const sesionValida = await verificarSesion(respuesta);
+
+  if (!sesionValida) {
+    return null;
+  }
+
+  const datos = await respuesta.json();
+
+  return {
+    respuesta,
+    datos
+  };
+};
+
+// Obtiene la próxima cita del usuario autenticado mediante una solicitud al backend.
+export const obtenerProximaCita = async () => {
+  const token = await AsyncStorage.getItem('token');
+
+  if (!token) {
+    return null;
+  }
+
+  const respuesta = await fetch(
+    `${API_URL}/citas/proxima`,
     {
       method: 'GET',
       headers: {

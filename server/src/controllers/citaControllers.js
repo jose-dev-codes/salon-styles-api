@@ -14,6 +14,19 @@ export const listar = async (req, res) => {
     }
 };
 
+// Obtiene la próxima cita del usuario autenticado.
+export const obtenerProximaCita = async (req, res) => {
+    try {
+        const cita = await citaService.obtenerProximaCita(req.usuario.id);
+
+        res.json(cita);
+    } catch (error) {
+        res.status(500).json({
+            error: "Error al obtener la próxima cita."
+        });
+    }
+};
+
 // Solicita al servicio la creación de una nueva cita.
 export const crear = async (req, res) => {
     try {

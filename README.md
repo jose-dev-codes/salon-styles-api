@@ -1,14 +1,19 @@
 # API de Gestión de Citas para Salón de Belleza
 
-Este repositorio contiene la estructura del cliente y del servidor para un sistema de gestión de citas de un salón de belleza. La implementación desarrollada en este proyecto corresponde principalmente al backend, construido con Node.js, Express y PostgreSQL, el cual expone una API REST para la autenticación de usuarios, la gestión de usuarios y la gestión de citas.
+Este repositorio contiene el desarrollo de un proyecto académico para la gestión de citas de un salón de belleza. El proyecto se encuentra actualmente en desarrollo y está compuesto por un cliente móvil desarrollado con React Native y Expo, junto con un backend construido con Node.js, Express y PostgreSQL.
+
+La aplicación móvil se utiliza actualmente mediante Expo Go para visualizar y probar la interfaz y las funcionalidades desarrolladas.
 
 ## Tecnologías utilizadas
 
 - Node.js
 - Express
+- React Native
+- Expo
 - PostgreSQL
 - pnpm
 - dotenv
+- cors
 - bcryptjs
 - jsonwebtoken
 
@@ -57,10 +62,15 @@ Cree un archivo llamado `.env` dentro de la carpeta `server` con el siguiente co
 PORT=3000
 
 DB_HOST=localhost
+
 DB_PORT=5432
+
 DB_USER=postgres
+
 DB_PASSWORD=su_contraseña
+
 DB_NAME=salon_styles
+
 JWT_SECRET=su_clave_secreta
 ```
 
@@ -120,6 +130,7 @@ La API expone las siguientes rutas para la gestión de usuarios:
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
+| GET | `/api/usuarios/perfil` | Obtiene la información del usuario autenticado. |
 | GET | `/api/usuarios/:id` | Obtiene la información de un usuario según su identificador. |
 | POST | `/api/usuarios` | Crea un nuevo usuario. |
 | PUT | `/api/usuarios/:id` | Actualiza los datos de un usuario según su identificador. |
@@ -151,6 +162,7 @@ La API expone las siguientes rutas para la gestión de citas:
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
 | GET | `/api/citas` | Obtiene las citas del usuario autenticado. |
+| GET | `/api/citas/proxima` | Obtiene la próxima cita pendiente o confirmada del usuario autenticado. |
 | POST | `/api/citas` | Crea una nueva cita para el usuario autenticado. |
 | PUT | `/api/citas/:id` | Actualiza una cita existente según su identificador. |
 | PATCH | `/api/citas/:id/cancelar` | Cancela una cita existente según su identificador. |
@@ -165,6 +177,8 @@ Al crear o actualizar una cita se realizan las siguientes validaciones:
 - Al crear una cita, el identificador del usuario se obtiene directamente del usuario autenticado mediante el token JWT.
 - El identificador del usuario no se recibe desde el cuerpo de la petición al crear una cita.
 - Al consultar las citas, únicamente se muestran las citas pertenecientes al usuario autenticado.
+- La consulta de la próxima cita únicamente considera citas con estado `pendiente` o `confirmada`.
+- La consulta de la próxima cita considera únicamente citas actuales o futuras y devuelve la más próxima según la fecha y hora.
 - Al actualizar una cita, primero se verifica que la cita indicada exista.
 - Al comprobar una posible cita duplicada durante una actualización, la propia cita que se está modificando se excluye de la búsqueda.
 - Antes de actualizar, cancelar o eliminar una cita se verifica que pertenezca al usuario autenticado.

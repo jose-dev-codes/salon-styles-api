@@ -45,3 +45,23 @@ export const formatearFecha = (fecha: string) => {
 export const formatearPrecio = (precio: string | number) => {
   return `$${Number(precio).toLocaleString('es-CO')}`;
 };
+
+export const formatearHora12 = (hora: string) => {
+  const horaRecortada = formatearHora(hora);
+  const [horas, minutos] = horaRecortada.split(':');
+  const horasNumero = parseInt(horas, 10);
+
+  const periodo = horasNumero >= 12 ? 'p.m.' : 'a.m.';
+  const horas12 = horasNumero % 12 === 0 ? 12 : horasNumero % 12;
+
+  return `${horas12}:${minutos} ${periodo}`;
+};
+
+export const formatearFechaLarga = (fecha: string) => {
+  const fechaFormateada = new Date(fecha);
+
+  return fechaFormateada.toLocaleDateString('es-CO', {
+    day: 'numeric',
+    month: 'long'
+  });
+};

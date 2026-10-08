@@ -7,7 +7,8 @@ type MensajeErrorProps = {
 
 const MensajeError = ({mensaje}: MensajeErrorProps) => {
   return (
-    <View style={styles.error}>
+    <View
+      style={styles.error}>
       <MaterialCommunityIcons
         name='alert-outline'
         size={26}
@@ -35,9 +36,10 @@ const styles = StyleSheet.create({
   },
   mensaje: {
     flexShrink: 1,
-    fontSize: 15.5,
+    fontSize: 14.5,
     color: '#D63031',
-    fontWeight: '600'
+    fontFamily: 'Poppins_500Medium',
+    lineHeight: 19
   }
 });
 

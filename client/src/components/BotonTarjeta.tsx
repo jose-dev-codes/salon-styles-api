@@ -21,9 +21,13 @@ const BotonTarjeta = ({
         {
           flex,
           backgroundColor:
-            variante === 'principal' ? 'rgba(255, 84, 212, 0.25)' : 'rgba(214, 48, 49, 0.25)',
+            variante === 'principal'
+              ? 'rgba(255, 84, 212, 0.25)'
+              : 'rgba(214, 48, 49, 0.25)',
           borderColor:
-            variante === 'principal' ? 'rgba(228, 43, 184, 0.50)' : 'rgba(214, 48, 49, 0.50)'
+            variante === 'principal'
+              ? 'rgba(228, 43, 184, 0.15)'
+              : 'rgba(214, 48, 49, 0.15)'
         }
       ]}
       onPress={onPress}
@@ -45,9 +49,10 @@ const styles = StyleSheet.create({
     borderWidth: 1
   },
   textoBoton: {
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center'
+    fontSize: 14,
+    fontFamily: 'Poppins_600SemiBold',
+    textAlign: 'center',
+    lineHeight: 21.5
   }
 });
 

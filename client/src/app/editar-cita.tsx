@@ -17,12 +17,14 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { actualizarCita } from '@/services/citaService';
 import { validarCita } from '@/validators/citaValidator';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 import Boton from '@/components/Boton';
 import CampoFormulario from '@/components/CampoFormulario';
 import ModalExito from '@/components/ModalExito';
 import MensajeError from '@/components/MensajeError';
 import Encabezado from '@/components/Encabezado';
-import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 const PantallaEditarCita = () => {
   const [fechaCita, setFechaCita] = useState('');
@@ -94,7 +96,7 @@ const PantallaEditarCita = () => {
             setAlturaEncabezado(evento.nativeEvent.layout.height)
           }
         >
-          <Encabezado titulo='Editar cita' />
+          <Encabezado titulo='Reagendar cita' />
         </View>
 
         <ScrollView
@@ -149,7 +151,7 @@ const PantallaEditarCita = () => {
 
         <ModalExito
           visible={mostrarExito}
-          mensaje='Cita actualizada correctamente.'
+          mensaje='Cita actualizada con exito.'
           onClose={() => router.back()}
         />
       </KeyboardAvoidingView>

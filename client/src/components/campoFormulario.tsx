@@ -54,7 +54,8 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginBottom: 5,
     fontSize: 14,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins_600SemiBold',
+    lineHeight: 18,
     color: '#D922AC'
   },
   contenedorInput: {
@@ -71,8 +72,9 @@ const styles = StyleSheet.create({
   },
   campoTexto: {
     flex: 1,
-    paddingVertical: 10,
-    fontSize: 16
+    paddingVertical: 7,
+    fontSize: 16,
+    fontFamily: 'Poppins_400Regular',
   }
 });
 

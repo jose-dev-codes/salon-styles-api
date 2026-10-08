@@ -48,7 +48,7 @@ const Boton = ({
 const styles = StyleSheet.create({
   boton: {
     backgroundColor: '#E42BB8',
-    paddingVertical: 12,
+    paddingVertical: 14,
     paddingHorizontal: 25,
     shadowColor: '#000',
     shadowOffset: {
@@ -61,9 +61,10 @@ const styles = StyleSheet.create({
   },
   textoBoton: {
     color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center'
+    fontSize: 15,
+    fontFamily: 'Poppins_500Medium',
+    textAlign: 'center',
+    lineHeight: 19.5
   }
 });
 

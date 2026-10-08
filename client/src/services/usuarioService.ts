@@ -1,4 +1,6 @@
-import { API_URL } from '../../config/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import API_URL from '../../config/api';
+import { verificarSesion } from './sesionService';
 
 // Registra un nuevo usuario mediante una solicitud al backend.
 export const registrarUsuario = async (
@@ -32,5 +34,37 @@ export const registrarUsuario = async (
   return {
     respuesta,
     datos
+  };
+};
+
+
+export const obtenerPerfil = async () => {
+  const token = await AsyncStorage.getItem('token');
+
+  if (!token) {
+    return null;
+  }
+
+  const respuesta = await fetch(
+    `${API_URL}/usuarios/perfil`,
+    {
+      method: 'GET',
+      headers: {
+        'Authorization': token
+      }
+    }
+  );
+
+  const sesionValida = await verificarSesion(respuesta);
+
+  if (!sesionValida) {
+    return null;
+  }
+
+  const datos = await respuesta.json();
+
+  return {
+    respuesta,
+    datos: datos.usuario
   };
 };

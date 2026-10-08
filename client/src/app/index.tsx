@@ -70,18 +70,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#FCE3EE'
   },
   titulo: {
-    fontSize: 28,
-    fontWeight: 'bold',
+    fontSize: 25,
+    fontFamily: 'Poppins_600SemiBold',
+    lineHeight: 35,
     textAlign: 'center',
     color: '#E42BB8'
   },
   subtitulo: {
     marginTop: 5,
     marginBottom: 30,
-    fontSize: 16,
+    fontSize: 15,
+    lineHeight: 20,
     color: '#8F1568',
     textAlign: 'center',
-    fontWeight: '600'
+    fontFamily: 'Poppins_500Medium'
   },
   botones: {
     gap: 15

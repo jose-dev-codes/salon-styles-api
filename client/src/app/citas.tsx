@@ -9,19 +9,33 @@ import {
   View
 } from 'react-native';
 
+import {
+  formatearFechaLarga,
+  formatearPrecio,
+  formatearHora12
+} from '@/utils/formularioUtils';
+
 import { cancelarCita, obtenerMisCitas } from '@/services/citaService';
 import { useCallback, useState } from 'react';
 import { useFocusEffect, router } from 'expo-router';
-import { formatearHora, formatearPrecio } from '@/utils/formularioUtils';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+import {
+  IconCalendarEvent,
+  IconCircleX,
+  IconClockHour8,
+  IconCoins,
+  IconClockQuestion
+} from '@tabler/icons-react-native';
+
+import MaskedView from '@react-native-masked-view/masked-view';
+import BarraNavegacion from '@/components/BarraNavegacion';
+import Encabezado from '@/components/Encabezado';
 import Boton from '@/components/Boton';
 import BotonTarjeta from '@/components/BotonTarjeta';
 import ModalExito from '@/components/ModalExito';
-import Encabezado from '@/components/Encabezado';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import BarraNavegacion from '@/components/BarraNavegacion';
-import { LinearGradient } from 'expo-linear-gradient';
-import MaskedView from '@react-native-masked-view/masked-view';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 type Cita = {
   id_cita: number;
@@ -35,35 +49,18 @@ type Cita = {
   precio: number
 };
 
-const formatearFecha = (fecha: string) => {
-  const fechaFormateada = new Date(fecha);
-
-  return fechaFormateada.toLocaleDateString('es-CO', {
-    day: 'numeric',
-    month: 'long'
-  });
-};
-
-const obtenerIconoEstado = (estado: string): {
-  nombre: keyof typeof MaterialCommunityIcons.glyphMap,
-  color: string
-} => {
+const obtenerIconoEstado = (estado: string) => {
   if (estado === 'cancelada') {
-    return { nombre: 'close-circle-outline', color: '#D63031' };
+    return {
+      icono: IconCircleX,
+      color: '#D63031'
+    };
   }
 
-  return { nombre: 'clock-outline', color: '#D922AC' };
-};
-
-const formatearHora12 = (hora: string) => {
-  const horaRecortada = formatearHora(hora);
-  const [horas, minutos] = horaRecortada.split(':');
-  const horasNumero = parseInt(horas, 10);
-
-  const periodo = horasNumero >= 12 ? 'p.m.' : 'a.m.';
-  const horas12 = horasNumero % 12 === 0 ? 12 : horasNumero % 12;
-
-  return `${horas12}:${minutos} ${periodo}`;
+  return {
+    icono: IconClockQuestion,
+    color: '#D922AC'
+  };
 };
 
 const PantallaCitas = () => {
@@ -122,10 +119,14 @@ const PantallaCitas = () => {
       >
         <View style={styles.fondoModal}>
           <View style={styles.modal}>
-            <Text style={styles.tituloModal}>Cancelar Cita</Text>
+            <Text style={styles.tituloModal}>Cancelar cita</Text>
 
             <Text style={styles.mensajeModal}>
               ¿Estás seguro de que deseas cancelar esta cita?
+            </Text>
+
+            <Text style={styles.advertenciaModal}>
+              Si confirmas, no podrás reagendarla.
             </Text>
 
             <View style={styles.botonesModal}>
@@ -155,7 +156,7 @@ const PantallaCitas = () => {
 
       <ModalExito
         visible={mostrarExito}
-        mensaje='Cita cancelada correctamente.'
+        mensaje='Cita cancelada con exito.'
         onClose={() => {
           setMostrarExito(false);
           cargarCitas();
@@ -190,16 +191,16 @@ const PantallaCitas = () => {
                 'black',
                 'transparent'
               ]}
-              locations={[0, 0.02, 0.98, 1]}
+              locations={[0, 0.015, 0.985, 1]}
               style={{ flex: 1 }}
             />
           }
         >
           <ScrollView
             style={{
-              marginHorizontal: 20,
+              paddingHorizontal: 15,
               alignSelf: 'stretch',
-              backgroundColor: 'transparent',
+              backgroundColor: '#FCE3EE',
               paddingTop: 25
             }}
             showsVerticalScrollIndicator={false}
@@ -214,89 +215,122 @@ const PantallaCitas = () => {
                 style={styles.cita}
               >
 
-                <Text style={styles.nombreServicio}>{cita.servicio}</Text>
+                <View style={styles.contenedorCita}>
+                  <View style={styles.encabezadoCita}>
+                    <View style={styles.perfilCita}>
+                      <MaterialCommunityIcons
+                        name='account-check-outline'
+                        size={22}
+                        color='#D922AC'
+                      />
+                    </View>
 
-                <View style={styles.filaConIcono}>
-                  <MaterialCommunityIcons
-                    name='account-outline'
-                    size={22}
-                    color='#D922AC'
-                  />
-                  <Text style={styles.valorConIcono}>{cita.especialista}</Text>
-                </View>
+                    <View>
+                      <Text style={styles.nombreServicio}>{cita.servicio}</Text>
+                      <Text style={styles.especialistaCita}>con {cita.especialista}</Text>
+                    </View>
+                  </View>
 
-                <View style={styles.filaConIcono}>
-                  <MaterialCommunityIcons
-                    name='calendar-outline'
-                    size={22}
-                    color='#D922AC'
-                  />
-                  <Text style={styles.valorConIcono}>
-                    {formatearFecha(cita.fecha)} — {formatearHora12(cita.hora)}
-                  </Text>
-                </View>
+                  <View style={styles.separador} />
 
-                <View style={styles.filaConIcono}>
-                  <MaterialCommunityIcons
-                    name='cash-multiple'
-                    size={22}
-                    color='#D922AC'
-                  />
-                  <Text style={styles.valorConIcono}>{formatearPrecio(cita.precio)}</Text>
-                </View>
+                  <View
+                    style={styles.filaDatos}>
+                    <View style={styles.filaConIcono}>
+                      <IconCalendarEvent
+                        size={23}
+                        color='#D922AC'
+                        strokeWidth={1.5}
+                      />
 
-                <View style={styles.filaConIcono}>
-                  <MaterialCommunityIcons
-                    name={obtenerIconoEstado(cita.estado).nombre}
-                    size={22}
-                    color={obtenerIconoEstado(cita.estado).color}
-                  />
+                      <Text style={styles.valorConIcono}>
+                        {formatearFechaLarga(cita.fecha)}
+                      </Text>
+                    </View>
 
-                  <Text style={styles.valorConIcono}>{cita.estado}</Text>
+                    <View style={styles.filaConIcono}>
+                      <IconClockHour8
+                        size={23}
+                        color="#E42BB8"
+                        strokeWidth={1.5}
+                      />
+
+                      <Text style={styles.valorConIcono}>
+                        {formatearHora12(cita.hora)}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.filaDatos}>
+                    <View style={styles.filaConIcono}>
+                      <IconCoins
+                        size={23}
+                        color="#E42BB8"
+                        strokeWidth={1.5}
+                      />
+
+                      <Text style={styles.valorConIcono}>{formatearPrecio(cita.precio)}</Text>
+                    </View>
+
+                    <View style={styles.filaConIcono}>
+
+                      {(() => {
+                        const { icono: Icono, color } = obtenerIconoEstado(cita.estado);
+
+                        return (
+                          <Icono
+                            size={23}
+                            color={color}
+                            strokeWidth={1.5}
+                          />
+                        );
+                      })()}
+
+                      <Text style={styles.valorConIcono}>{cita.estado}</Text>
+                    </View>
+                  </View>
                 </View>
 
                 {cita.estado !== 'cancelada' && (
-                  <View style={styles.botones}>
-                    <BotonTarjeta
-                      texto='Actualizar'
-                      onPress={() =>
-                        router.push({
-                          pathname: '/editar-cita',
-                          params: {
-                            id: cita.id_cita.toString(),
-                            fecha: cita.fecha,
-                            hora: cita.hora,
-                            especialista: cita.especialista
-                          }
-                        })
-                      }
-                      flex={1}
-                    />
+                    <View style={styles.botones}>
+                      <BotonTarjeta
+                        texto='Reagendar'
+                        onPress={() =>
+                          router.push({
+                            pathname: '/editar-cita',
+                            params: {
+                              id: cita.id_cita.toString(),
+                              fecha: cita.fecha,
+                              hora: cita.hora,
+                              especialista: cita.especialista
+                            }
+                          })
+                        }
+                        flex={1}
+                      />
 
-                    <BotonTarjeta
-                      texto='Cancelar'
-                      onPress={() => mostrarConfirmacionCancelacion(cita.id_cita)}
-                      flex={1}
-                      variante='peligro'
-                    />
+                      <BotonTarjeta
+                        texto='Cancelar'
+                        onPress={() => mostrarConfirmacionCancelacion(cita.id_cita)}
+                        flex={1}
+                        variante='peligro'
+                      />
 
-                  </View>
-                )}
+                    </View>
+                  )}
               </View>
             ))}
-
           </ScrollView>
         </MaskedView>
       )}
 
       {citas.length === 0 && (
         <View
-          style={styles.vacio}>
+          style={styles.citasVacia}>
           <Image
             source={require('@/assets/images/avatar-sin-citas.png')}
             style={styles.imagenVacia}
           />
-          <Text style={styles.mensajeVacio}>No tienes citas agendadas</Text>
+          <Text style={styles.mensajeVacio}>¡No tienes citas agendadas!</Text>
         </View>
       )}
 
@@ -335,37 +369,90 @@ const PantallaCitas = () => {
 const styles = StyleSheet.create({
   contenedor: {
     alignItems: 'center',
-    paddingBottom: 100
+    paddingBottom: 100,
+    paddingHorizontal: 5
+  },
+  encabezado: {
+    marginTop: 5
+  },
+  acciones: {
+    marginHorizontal: 20,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    gap: 15,
+    marginTop: 15,
+    marginBottom: 10
+  },
+  contenedorCita: {
+    gap: 5
   },
   cita: {
     width: '100%',
-    padding: 15,
+    paddingVertical: 13,
+    paddingHorizontal: 15,
     marginBottom: 15,
-    borderWidth: 1,
-    borderColor: 'rgba(217, 34, 172, 0.50)',
+    borderColor: 'rgba(217, 34, 172, 0.25)',
     borderRadius: 12,
-    backgroundColor: '#FFFFFF',
-    gap: 3
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    gap: 5,
+    boxShadow: '0px 0px 4px 1px rgba(0, 0, 0, 0.04)',
+  },
+  encabezadoCita: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10
+  },
+  perfilCita: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 40,
+    width: 40,
+    backgroundColor: 'rgba(228, 43, 184, 0.20)',
+    borderColor: 'rgba(228, 43, 184, 0.40)',
+    borderWidth: 1,
+    borderRadius: 100
+  },
+  nombreServicio: {
+    fontSize: 17,
+    fontFamily: 'Poppins_600SemiBold',
+    color: '#E42BB8',
+    lineHeight: 21,
+    marginBottom: 5
+  },
+  especialistaCita: {
+    fontSize: 14,
+    fontFamily: 'Poppins_500Medium',
+    lineHeight: 16,
+    color: '#9F167C'
+  },
+  separador: {
+    height: 1,
+    backgroundColor: 'rgba(217, 34, 172, 0.30)',
+    marginVertical: 5
+  },
+  filaDatos: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 20
+  },
+  filaConIcono: {
+    width: '50%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5
+  },
+  valorConIcono: {
+    fontSize: 14,
+    color: '#9F167C',
+    fontFamily: 'Poppins_400Regular',
+    lineHeight: 18
   },
   botones: {
     flexDirection: 'row',
     gap: 10,
-    marginTop: 13
-  },
-  fila: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 2
-  },
-  etiqueta: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#D922AC'
-  },
-  valor: {
-    fontSize: 14,
-    textAlign: 'right',
-    color: '#3b3434'
+    marginTop: 12
   },
   fondoModal: {
     flex: 1,
@@ -374,24 +461,32 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
   },
   modal: {
-    width: '85%',
+    width: '88%',
     padding: 20,
     borderRadius: 12,
     backgroundColor: '#FFFFFF',
-    borderWidth: 2,
-    borderColor: '#D922AC',
   },
   tituloModal: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins_600SemiBold',
+    lineHeight: 24,
     textAlign: 'center',
     color: '#E42BB8',
-    marginBottom: 10,
+    marginBottom: 12,
   },
   mensajeModal: {
     fontSize: 15,
+    fontFamily: 'Poppins_400Regular',
     textAlign: 'center',
-    marginBottom: 20,
+    lineHeight: 19,
+    marginBottom: 15,
+  },
+  advertenciaModal: {
+    fontSize: 14,
+    fontFamily: 'Poppins_500Medium',
+    lineHeight: 18,
+    color: '#D63031',
+    marginBottom: 25
   },
   botonesModal: {
     flexDirection: 'row',
@@ -407,21 +502,25 @@ const styles = StyleSheet.create({
   },
   botonSi: {
     flex: 1,
+    justifyContent: 'center',
     paddingVertical: 12,
     borderRadius: 8,
     backgroundColor: '#E42BB8',
   },
   textoBotonNo: {
     color: '#D922AC',
-    fontWeight: 'bold',
+    justifyContent: 'center',
+    fontFamily: 'Poppins_600SemiBold',
     textAlign: 'center',
+    lineHeight: 20
   },
   textoBotonSi: {
     color: '#FFFFFF',
-    fontWeight: 'bold',
+    fontFamily: 'Poppins_600SemiBold',
     textAlign: 'center',
+    lineHeight: 20
   },
-  vacio: {
+  citasVacia: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -434,21 +533,14 @@ const styles = StyleSheet.create({
   },
   mensajeVacio: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins_500Medium',
+    lineHeight: 21,
     textAlign: 'center',
     color: '#E42BB8'
   },
   areaSegura: {
     flex: 1,
     backgroundColor: '#FCE3EE'
-  },
-  acciones: {
-    marginHorizontal: 20,
-    alignSelf: 'center',
-    flexDirection: 'row',
-    gap: 15,
-    marginTop: 15,
-    marginBottom: 15
   },
   indicadorScroll: {
     position: 'absolute',
@@ -463,27 +555,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#E42BB8',
     borderRadius: 3,
   },
-  encabezado: {
-    marginTop: 5
-  },
   navegacion: {
     marginTop: 5,
-    marginBottom: 3
-  },
-  nombreServicio: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#E42BB8',
-    marginBottom: 3
-  },
-  filaConIcono: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8
-  },
-  valorConIcono: {
-    fontSize: 15,
-    color: '#3b3434'
+    marginBottom: 5
   }
 });
 

@@ -8,6 +8,12 @@ import { verificarPropietario } from "../middlewares/verificarPropietario.js";
 const router = Router();
 
 router.get(
+    "/perfil",
+    verificarAutenticacion,
+    usuarioController.obtenerPerfil
+);
+
+router.get(
     "/:id",
     verificarAutenticacion,
     verificarPropietario,

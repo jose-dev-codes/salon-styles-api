@@ -16,41 +16,95 @@ const BarraNavegacion = () => {
   return (
     <View style={styles.contenedor}>
       <TouchableOpacity
-        style={[styles.entrada, rutaActual === '/home' && styles.entradaActiva]}
+        style={[
+          styles.entrada,
+          rutaActual === '/home' && styles.entradaActiva
+        ]}
         onPress={() => navegar('/home')}
       >
         <MaterialCommunityIcons
           name='home'
           size={26}
-          color={rutaActual === '/home' ? '#FFFFFF' : '#E42BB8'} />
-        <Text style={[styles.texto, {color: rutaActual === '/home' ? '#FFFFFF' : '#E42BB8'}]}>Inicio</Text>
+          color={rutaActual === '/home' ? '#FFFFFF' : '#E42BB8'}
+        />
+
+        <Text
+          style={[
+            styles.texto,
+            {
+              color: rutaActual === '/home'
+                ? '#FFFFFF'
+                : '#E42BB8'
+            }
+          ]}>Inicio
+        </Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.entrada}>
         <MaterialCommunityIcons
           name='creation'
           size={26}
-          color={rutaActual === '/servicios' ? '#EA85CE' : '#E42BB8'} />
-        <Text style={[styles.texto, {color: rutaActual === '/servicios' ? '#EA85CE' : '#E42BB8'}]}>Servicios</Text>
+          color={rutaActual === '/servicios' ? '#EA85CE' : '#E42BB8'}
+        />
+        <Text
+          style={[
+            styles.texto,
+            {
+              color: rutaActual === '/servicios'
+                ? '#EA85CE'
+                : '#E42BB8'
+            }
+          ]}>Servicios
+        </Text>
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles.entrada, rutaActual === '/citas' && styles.entradaActiva]}
+        style={[
+          styles.entrada,
+          rutaActual === '/citas' && styles.entradaActiva
+        ]}
         onPress={() => navegar('/citas')}
       >
         <MaterialCommunityIcons
           name='calendar-month'
           size={26}
-          color={rutaActual === '/citas' ? '#FFFFFF' : '#E42BB8'} />
-        <Text style={[styles.texto, {color: rutaActual === '/citas' ? '#FFFFFF' : '#E42BB8'}]}>Citas</Text>
+          color={rutaActual === '/citas' ? '#FFFFFF' : '#E42BB8'}
+        />
+        <Text
+          style={[
+            styles.texto,
+            {
+              color: rutaActual === '/citas'
+                ? '#FFFFFF'
+                : '#E42BB8'
+            }
+          ]}>Citas
+        </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={[styles.entrada, rutaActual === '/perfil' && styles.entradaActiva]}>
+      <TouchableOpacity
+        style={[
+          styles.entrada,
+          rutaActual === '/perfil' && styles.entradaActiva
+        ]}
+        onPress={() => navegar('/perfil')}
+      >
         <MaterialCommunityIcons
           name='account'
           size={26}
-          color={rutaActual === '/perfil' ? '#F0A3DA' : '#E42BB8'} />
-        <Text style={[styles.texto, {color: rutaActual === '/perfil' ? '#F0A3DA' : '#E42BB8'}]}>Perfil</Text>
+          color={rutaActual === '/perfil' ? '#FFFFFF' : '#E42BB8'}
+        />
+
+        <Text
+          style={[
+            styles.texto,
+            {
+              color: rutaActual === '/perfil'
+                ? '#FFFFFF'
+                : '#E42BB8'
+            }
+          ]}>Perfil
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -62,17 +116,16 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 8,
-    paddingVertical: 6,
-    borderWidth: 1,
-    borderColor: 'rgba(228, 43, 184, 0.25)',
+    paddingVertical: 5,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    borderBottomLeftRadius: 3,
-    borderBottomRightRadius: 3,
-    borderTopLeftRadius: 32,
-    borderTopRightRadius: 32,
-    gap: 12
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    gap: 12,
+    boxShadow: '0px 1px 3px 0px rgba(0, 0, 0, 0.08)'
   },
   entrada: {
     flex: 1,
@@ -81,12 +134,16 @@ const styles = StyleSheet.create({
   },
   texto: {
     fontSize: 13,
-    fontWeight: 'bold'
+    lineHeight: 16,
+    fontFamily: 'Poppins_500Medium'
   },
   entradaActiva: {
     backgroundColor: '#E42BB8',
-    borderRadius: 20,
-    paddingVertical: 3
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    paddingVertical: 2
   }
 });
 

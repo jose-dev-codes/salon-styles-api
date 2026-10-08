@@ -1,4 +1,4 @@
-import { API_URL } from '../../config/api';
+import API_URL from '../../config/api';
 
 // Inicia sesión mediante una solicitud al backend.
 export const iniciarSesion = async (

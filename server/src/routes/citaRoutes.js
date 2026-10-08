@@ -16,6 +16,8 @@ const router = express.Router();
 
 // Define las rutas de citas y protege cada operación según corresponda.
 router.get("/", verificarAutenticacion, citaController.listar);
+router.get("/proxima", verificarAutenticacion, citaController.obtenerProximaCita);
+
 router.post(
     "/",
     verificarAutenticacion,

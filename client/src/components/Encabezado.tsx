@@ -10,20 +10,22 @@ const Encabezado = ({titulo}: {titulo: string}) => {
 
 const styles = StyleSheet.create({
   encabezado: {
+    height: 48,
     marginHorizontal: 20,
     alignSelf: 'stretch',
     backgroundColor: '#E42BB8',
-    paddingVertical: 10,
     alignItems: 'center',
-    borderTopLeftRadius: 3,
-    borderTopRightRadius: 3,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    justifyContent: 'center',
+    borderTopLeftRadius: 6,
+    borderTopRightRadius: 6,
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25
   },
   tituloEncabezado: {
     color: '#FFFFFF',
-    fontSize: 22,
-    fontWeight: 'bold'
+    fontSize: 21,
+    fontFamily: 'Poppins_500Medium',
+    lineHeight: 30
   }
 });
 

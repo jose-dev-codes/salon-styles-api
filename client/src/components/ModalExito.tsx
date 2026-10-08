@@ -1,4 +1,4 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { IconCircleCheck } from '@tabler/icons-react-native';
 import { useEffect } from 'react';
 import {
   Modal,
@@ -41,11 +41,11 @@ const ModalExito = ({
       <View style={styles.fondoModal}>
         <View style={styles.modal}>
 
-          <MaterialCommunityIcons
-            name='check-circle-outline'
-            size={90}
-            color='#E42BB8'
-            style={{marginBottom: 10}}
+          <IconCircleCheck
+            size={110}
+            color="#E42BB8"
+            strokeWidth={1.5}
+            style={{ marginBottom: 5 }}
           />
 
           <Text style={styles.mensajeModal}>{mensaje}</Text>
@@ -64,17 +64,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.6)'
   },
   modal: {
-    width: '85%',
-    padding: 25,
+    width: '88%',
+    padding: 20,
     borderRadius: 12,
     backgroundColor: '#FFFFFF',
-    borderWidth: 2,
-    borderColor: '#D922AC',
     alignItems: 'center'
   },
   mensajeModal: {
     fontSize: 17,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins_600SemiBold',
+    lineHeight: 20,
     textAlign: 'center',
     color: '#E42BB8'
   }

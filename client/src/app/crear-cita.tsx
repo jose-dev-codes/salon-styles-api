@@ -13,13 +13,14 @@ import { useState, useEffect } from 'react';
 import { router } from 'expo-router';
 import { actualizarCampo, limpiarError, limpiarCampos } from '@/utils/formularioUtils';
 import { validarCita } from '@/validators/citaValidator';
+import { formatearPrecio } from '@/utils/formularioUtils';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import Encabezado from '@/components/Encabezado';
 import Boton from '@/components/Boton';
 import CampoFormulario from '@/components/CampoFormulario';
 import ModalExito from '@/components/ModalExito';
 import MensajeError from '@/components/MensajeError';
-import { formatearPrecio } from '@/utils/formularioUtils';
-import Encabezado from '@/components/Encabezado';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const PantallaCrearCita = () => {
   const [idServicio, setIdServicio] = useState('');
@@ -247,7 +248,9 @@ const styles = StyleSheet.create({
   },
   textoSelector: {
     color: '#333333',
-    fontSize: 16
+    fontSize: 16,
+    fontFamily: 'Poppins_400Regular',
+    lineHeight: 21
   },
   flechaSelector: {
     color: '#D922AC',
@@ -261,39 +264,45 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
   },
   modalServicios: {
-    width: '85%',
+    width: '88%',
     padding: 20,
     borderRadius: 12,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 2,
-    borderColor: '#D922AC',
+    backgroundColor: '#FFFFFF'
   },
   tituloModal: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins_600SemiBold',
+    lineHeight: 25,
     textAlign: 'center',
     color: '#E42BB8',
-    marginBottom: 15,
+    marginBottom: 20
   },
   opcionServicio: {
     paddingVertical: 12,
     paddingHorizontal: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#D922AC',
+    backgroundColor: 'rgba(228, 43, 184, 0.1)',
+    borderColor: 'rgba(228, 43, 184, 0.10)',
+    borderWidth: 1,
+    borderRadius: 6,
+    marginBottom: 3
   },
   textoOpcion: {
     fontSize: 16,
+    fontFamily: 'Poppins_400Regular',
+    lineHeight: 22,
     color: '#D922AC',
   },
   botonCerrarModal: {
     marginTop: 15,
-    paddingVertical: 12,
+    paddingVertical: 13,
     borderRadius: 8,
     backgroundColor: '#E42BB8',
   },
   textoBotonCerrar: {
+    fontSize: 15,
+    lineHeight: 18,
     color: '#FFFFFF',
-    fontWeight: 'bold',
+    fontFamily: 'Poppins_500Medium',
     textAlign: 'center',
   },
   listaServicios: {
