@@ -7,7 +7,7 @@ import {
 
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { validarLogin } from '@/validators/authValidator';
+import { validarLogin, ErroresLogin } from '@/validators/authValidator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { iniciarSesion } from '@/services/authService';
 import {
@@ -26,25 +26,37 @@ const PantallaLogin = () => {
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [error, setError] = useState('');
+  const [errores, setErrores] = useState<ErroresLogin>({});
   const [alturaEncabezado, setAlturaEncabezado] = useState(0);
 
+  const limpiarErrorCampo = (campo: keyof ErroresLogin) => {
+    setErrores((anteriores) => ({...anteriores, [campo]: undefined}));
+  };
+
+  const limpiarErroresCampo = (campo: keyof ErroresLogin) => {
+    limpiarError(setError);
+    limpiarErrorCampo(campo);
+  };
+
   const manejarInicioSesion = async () => {
+    limpiarError(setError);
+    setErrores({});
+
     const datosLimpios = limpiarCampos({
       correo,
       contrasena
     });
 
-    const mensajeError = validarLogin(
+    const erroresValidacion = validarLogin(
       datosLimpios.correo,
       datosLimpios.contrasena
     );
 
-    if (mensajeError) {
-      setError(mensajeError);
+    // Si algún campo tiene error, se marcan y no se envía nada al servidor
+    if (Object.keys(erroresValidacion).length > 0) {
+      setErrores(erroresValidacion);
       return;
     }
-
-    limpiarError(setError);
 
     try {
       const { respuesta, datos } = await iniciarSesion(
@@ -97,8 +109,11 @@ const PantallaLogin = () => {
             keyboardType='email-address'
             autoCapitalize='none'
             icono='email-outline'
+            error={errores.correo}
             onChangeText={(texto) =>
-              actualizarCampo(texto, setCorreo, setError)
+              actualizarCampo(texto, setCorreo, () =>
+                limpiarErroresCampo('correo')
+              )
             }
           />
 
@@ -108,8 +123,11 @@ const PantallaLogin = () => {
             value={contrasena}
             secureTextEntry
             icono='lock-outline'
+            error={errores.contrasena}
             onChangeText={(texto) =>
-              actualizarCampo(texto, setContrasena, setError)
+              actualizarCampo(texto, setContrasena, () =>
+                limpiarErroresCampo('contrasena')
+              )
             }
           />
 

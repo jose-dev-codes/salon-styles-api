@@ -1,21 +1,27 @@
+// Errores por campo del inicio de sesión. Solo aparecen los campos que fallaron.
+export type ErroresLogin = {
+  correo?: string,
+  contrasena?: string
+};
+
 export const validarLogin = (correo: string, contrasena: string) => {
-  if (!correo.trim()) {
-    return 'El correo es obligatorio.';
-  }
+  const errores: ErroresLogin = {};
 
   const correoValido = /\S+@\S+\.\S+/;
 
-  if (!correoValido.test(correo)) {
-    return 'Ingresa un correo válido.';
+  //Validación del correo
+  if (!correo.trim()) {
+    errores.correo = 'El correo es obligatorio.';
+  } else if (!correoValido.test(correo)) {
+    errores.correo = 'Ingresa un correo válido.';
   }
 
+  //Validación de la contraseña
   if (!contrasena.trim()) {
-    return 'La contraseña es obligatoria.';
+    errores.contrasena = 'La contraseña es obligatoria.';
+  } else if (contrasena.length < 6) {
+    errores.contrasena = 'La contraseña debe tener al menos 6 caracteres.';
   }
 
-  if (contrasena.length < 6) {
-    return 'La contraseña debe tener al menos 6 carcateres.';
-  }
-
-  return null;
+  return errores;
 };

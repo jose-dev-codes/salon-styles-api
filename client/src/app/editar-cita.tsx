@@ -16,7 +16,7 @@ import {
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { actualizarCita } from '@/services/citaService';
-import { validarCita } from '@/validators/citaValidator';
+import { validarCita, ErroresCita } from '@/validators/citaValidator';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import Boton from '@/components/Boton';
@@ -31,6 +31,7 @@ const PantallaEditarCita = () => {
   const [horaCita, setHoraCita] = useState('');
   const [especialistaCita, setEspecialistaCita] = useState('');
   const [error, setError] = useState('');
+  const [errores, setErrores] = useState<ErroresCita>({});
   const [mostrarExito, setMostrarExito] = useState(false);
   const [alturaEncabezado, setAlturaEncabezado] = useState(0);
 
@@ -42,9 +43,20 @@ const PantallaEditarCita = () => {
     if (especialista) setEspecialistaCita(especialista.toString());
   }, [fecha, hora, especialista]);
 
+  // Quita solo el error del campo que se está corrigiendo
+  const limpiarErrorCampo = (campo: keyof ErroresCita) => {
+    setErrores((anteriores) => ({ ...anteriores, [campo]: undefined }));
+  };
+
+  const limpiarErroresCampo = (campo: keyof ErroresCita) => {
+    limpiarError(setError);
+    limpiarErrorCampo(campo);
+  };
+
   // Envía los cambios al backend y muestra un mensaje si la actualización es exitosa.
   const guardarCambios = async () => {
     limpiarError(setError);
+    setErrores({});
 
     const datosLimpios = limpiarCampos({
       fechaCita,
@@ -52,14 +64,14 @@ const PantallaEditarCita = () => {
       especialistaCita
     });
 
-    const errorValidacion = validarCita(
+    const erroresValidacion = validarCita(
       datosLimpios.fechaCita,
       datosLimpios.horaCita,
       datosLimpios.especialistaCita
     );
 
-    if (errorValidacion) {
-      setError(errorValidacion);
+    if (Object.keys(erroresValidacion).length > 0) {
+      setErrores(erroresValidacion);
       return;
     }
 
@@ -113,8 +125,11 @@ const PantallaEditarCita = () => {
             placeholder='AAAA-MM-DD'
             value={fechaCita}
             icono='calendar-outline'
+            error={errores.fechaCita}
             onChangeText={(texto) =>
-              actualizarCampo(texto, setFechaCita, setError)
+              actualizarCampo(texto, setFechaCita, () =>
+                limpiarErroresCampo('fechaCita')
+              )
             }
           />
 
@@ -123,8 +138,11 @@ const PantallaEditarCita = () => {
             placeholder='HH:MM'
             value={horaCita}
             icono='clock-outline'
+            error={errores.horaCita}
             onChangeText={(texto) =>
-              actualizarCampo(texto, setHoraCita, setError)
+              actualizarCampo(texto, setHoraCita, () =>
+                limpiarErroresCampo('horaCita')
+              )
             }
           />
 
@@ -133,8 +151,11 @@ const PantallaEditarCita = () => {
             placeholder='Nombre del especialista'
             value={especialistaCita}
             icono='account-outline'
+            error={errores.especialistaCita}
             onChangeText={(texto) =>
-              actualizarCampo(texto, setEspecialistaCita, setError)
+              actualizarCampo(texto, setEspecialistaCita, () =>
+                limpiarErroresCampo('especialistaCita')
+              )
             }
           />
 

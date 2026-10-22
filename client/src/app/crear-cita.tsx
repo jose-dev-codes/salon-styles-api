@@ -12,7 +12,7 @@ import { crearCita, obtenerServicios } from '@/services/citaService';
 import { useState, useEffect } from 'react';
 import { router } from 'expo-router';
 import { actualizarCampo, limpiarError, limpiarCampos } from '@/utils/formularioUtils';
-import { validarCita } from '@/validators/citaValidator';
+import { validarCita, ErroresCita } from '@/validators/citaValidator';
 import { formatearPrecio } from '@/utils/formularioUtils';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -30,6 +30,7 @@ const PantallaCrearCita = () => {
   const [servicios, setServicios] = useState<any[]>([]);
   const [modalServiciosVisible, setModalServiciosVisible] = useState(false);
   const [error, setError] = useState('');
+  const [errores, setErrores] = useState<ErroresCita>({});
   const [mostrarExito, setMostrarExito] = useState(false);
   const [alturaEncabezado, setAlturaEncabezado] = useState(0);
 
@@ -45,9 +46,20 @@ const PantallaCrearCita = () => {
     cargarServicios();
   }, []);
 
+  // Quita solo el error del campo que se está corrigiendo
+  const limpiarErrorCampo = (campo: keyof ErroresCita) => {
+    setErrores((anteriores) => ({ ...anteriores, [campo]: undefined }));
+  };
+
+  const limpiarErroresCampo = (campo: keyof ErroresCita) => {
+    limpiarError(setError);
+    limpiarErrorCampo(campo);
+  };
+
   // Envía los datos de la cita al backend y muestra un mensaje si se crea correctamente.
   const guardarCita = async () => {
     limpiarError(setError);
+    setErrores({});
 
     const datosLimpios = limpiarCampos({
       idServicio,
@@ -56,15 +68,15 @@ const PantallaCrearCita = () => {
       especialistaCita
     });
 
-    const errorValidacion = validarCita(
+    const erroresValidacion = validarCita(
       datosLimpios.fechaCita,
       datosLimpios.horaCita,
       datosLimpios.especialistaCita,
       datosLimpios.idServicio
     );
 
-    if (errorValidacion) {
-      setError(errorValidacion);
+    if (Object.keys(erroresValidacion).length > 0) {
+      setErrores(erroresValidacion);
       return;
     }
 
@@ -115,8 +127,14 @@ const PantallaCrearCita = () => {
         >
 
           <TouchableOpacity
-            style={styles.selectorServicio}
-            onPress={() => setModalServiciosVisible(true)}
+            style={[
+              styles.selectorServicio,
+              errores.idServicio ? styles.selectorServicioError : null
+            ]}
+            onPress={() => {
+              setModalServiciosVisible(true);
+              limpiarErroresCampo('idServicio');
+            }}
           >
             <Text style={styles.textoSelector}>
               {idServicio
@@ -128,16 +146,28 @@ const PantallaCrearCita = () => {
               }
             </Text>
 
-            <Text style={styles.flechaSelector}>▼</Text>
+            <Text style={[
+              styles.flechaSelector,
+              errores.idServicio ? { color: '#D63031' } : null
+            ]}>▼</Text>
           </TouchableOpacity>
+
+          {
+            errores.idServicio
+              ? <Text style={styles.mensajeError}>{errores.idServicio}</Text>
+              : null
+          }
 
           <CampoFormulario
             label='Fecha'
             placeholder='AAAA-MM-DD'
             value={fechaCita}
             icono='calendar-outline'
+            error={errores.fechaCita}
             onChangeText={(texto) =>
-              actualizarCampo(texto, setFechaCita, setError)
+              actualizarCampo(texto, setFechaCita, () =>
+                limpiarErroresCampo('fechaCita')
+              )
             }
           />
 
@@ -146,8 +176,11 @@ const PantallaCrearCita = () => {
             placeholder='HH:MM'
             value={horaCita}
             icono='clock-outline'
+            error={errores.horaCita}
             onChangeText={(texto) =>
-              actualizarCampo(texto, setHoraCita, setError)
+              actualizarCampo(texto, setHoraCita, () =>
+                limpiarErroresCampo('horaCita')
+              )
             }
           />
 
@@ -156,8 +189,11 @@ const PantallaCrearCita = () => {
             placeholder='Nombre del especialista'
             value={especialistaCita}
             icono='account-outline'
+            error={errores.especialistaCita}
             onChangeText={(texto) =>
-              actualizarCampo(texto, setEspecialistaCita, setError)
+              actualizarCampo(texto, setEspecialistaCita, () =>
+                limpiarErroresCampo('especialistaCita')
+              )
             }
           />
 
@@ -246,6 +282,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center'
   },
+  selectorServicioError: {
+    borderColor: '#D63031',
+    marginBottom: 4
+  },
   textoSelector: {
     color: '#333333',
     fontSize: 16,
@@ -330,6 +370,14 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 1
+  },
+  mensajeError: {
+    alignSelf: 'flex-start',
+    marginBottom: 11,
+    fontSize: 14,
+    lineHeight: 18,
+    color: '#D63031',
+    fontFamily: 'Poppins_500Medium'
   }
 });
 

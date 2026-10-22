@@ -1,5 +1,15 @@
 import { obtenerError, Requisito } from '@/utils/formularioUtils';
 
+// Errores por campo del registro. Solo aparecen los campos que fallaron.
+export type ErroresRegistro = {
+  nombres?: string,
+  apellidos?: string,
+  correo?: string,
+  contrasena?: string,
+  numeroTelefono?: string,
+  fechaNacimiento?: string
+};
+
 // Validación de los datos del registro de usuario
 export const validarRegistro = (
   nombres: string,
@@ -10,20 +20,7 @@ export const validarRegistro = (
   fechaNacimiento: string
 ) => {
 
-  const campos = [
-    nombres,
-    apellidos,
-    correo,
-    contrasena,
-    numeroTelefono,
-    fechaNacimiento
-  ];
-
-  const camposVacios = campos.filter(campo => !campo.trim()).length;
-
-  if (camposVacios === campos.length) {
-    return 'Por favor, completa todos los campos.';
-  }
+  const errores: ErroresRegistro = {};
 
   const regexNombre = /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü]+(?:[ '][A-Za-zÁÉÍÓÚáéíóúÑñÜü]+)*$/;
   const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -46,7 +43,7 @@ export const validarRegistro = (
 
   const errorNombres = obtenerError(requisitosNombres);
 
-  if (errorNombres) return errorNombres;
+  if (errorNombres) errores.nombres = errorNombres;
 
   // Validación de apellidos
   const requisitosApellidos: Requisito[] = [
@@ -66,7 +63,7 @@ export const validarRegistro = (
 
   const errorApellidos = obtenerError(requisitosApellidos);
 
-  if (errorApellidos) return errorApellidos;
+  if (errorApellidos) errores.apellidos = errorApellidos;
 
   // Validación de correo
   const requisitosCorreo: Requisito[] = [
@@ -86,7 +83,7 @@ export const validarRegistro = (
 
   const errorCorreo = obtenerError(requisitosCorreo);
 
-  if (errorCorreo) return errorCorreo;
+  if (errorCorreo) errores.correo = errorCorreo;
 
   // Validación de teléfono
   const requisitosTelefono: Requisito[] = [
@@ -111,7 +108,7 @@ export const validarRegistro = (
 
   const errorTelefono = obtenerError(requisitosTelefono);
 
-  if (errorTelefono) return errorTelefono;
+  if (errorTelefono) errores.numeroTelefono = errorTelefono;
 
   // Validación de fecha de nacimiento
   const requisitosFecha: Requisito[] = [
@@ -127,7 +124,7 @@ export const validarRegistro = (
 
   const errorFecha = obtenerError(requisitosFecha);
 
-  if (errorFecha) return errorFecha;
+  if (errorFecha) errores.fechaNacimiento = errorFecha;
 
   // Validación de contraseña
   const requisitosContrasena: Requisito[] = [
@@ -163,7 +160,7 @@ export const validarRegistro = (
 
   const errorContrasena = obtenerError(requisitosContrasena);
 
-  if (errorContrasena) return errorContrasena;
+  if (errorContrasena) errores.contrasena = errorContrasena;
 
-  return null;
+  return errores;
 };

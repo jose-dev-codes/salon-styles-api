@@ -10,6 +10,7 @@ type CampoFormularioProps = {
   keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   icono?: keyof typeof MaterialCommunityIcons.glyphMap;
+  error?: string
 };
 
 const CampoFormulario = ({
@@ -20,18 +21,22 @@ const CampoFormulario = ({
   secureTextEntry = false,
   keyboardType = 'default',
   autoCapitalize = 'sentences',
-  icono
+  icono,
+  error
 }: CampoFormularioProps) => {
   return (
     <>
       <Text style={styles.etiqueta}>{label}</Text>
 
-      <View style={styles.contenedorInput}>
+      <View style={[
+        styles.contenedorInput,
+        error ? styles.contenedorInputError : null
+      ]}>
         {icono && (
           <MaterialCommunityIcons
             name={icono}
             size={24}
-            color='#D922AC'
+            color={error ? '#D63031' : '#D922AC'}
           />
         )}
 
@@ -45,6 +50,8 @@ const CampoFormulario = ({
           autoCapitalize={autoCapitalize}
         />
       </View>
+
+      {error ? <Text style={styles.mensajeError}>{error}</Text> : null}
     </>
   );
 };
@@ -70,11 +77,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 15
   },
+  contenedorInputError: {
+    borderColor: '#D63031',
+    marginBottom: 4
+  },
   campoTexto: {
     flex: 1,
     paddingVertical: 7,
     fontSize: 16,
     fontFamily: 'Poppins_400Regular',
+  },
+  mensajeError: {
+    alignSelf: 'flex-start',
+    marginBottom: 11,
+    fontSize: 14,
+    lineHeight: 18,
+    color: '#D63031',
+    fontFamily: 'Poppins_500Medium'
   }
 });
 

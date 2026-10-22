@@ -14,7 +14,7 @@ import {
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { registrarUsuario } from '@/services/usuarioService';
-import { validarRegistro } from '@/validators/usuarioValidator';
+import { validarRegistro, ErroresRegistro } from '@/validators/usuarioValidator';
 
 import Boton from '@/components/Boton';
 import CampoFormulario from '@/components/CampoFormulario';
@@ -32,6 +32,7 @@ const PantallaRegistro = () => {
   const [fechaNacimientoUsuario, setFechaNacimientoUsuario] = useState('');
   const [mostrarExito, setMostrarExito] = useState(false);
   const [error, setError] = useState('');
+  const [errores, setErrores] = useState<ErroresRegistro>({});
   const [alturaEncabezado, setAlturaEncabezado] = useState(0);
 
   const limpiarFormulario = () => {
@@ -42,10 +43,23 @@ const PantallaRegistro = () => {
     setNumeroTelefonoUsuario('');
     setFechaNacimientoUsuario('');
     setError('');
+    setErrores({});
+  };
+
+  // Quita solo el error del campo que se está corrigiendo
+  const limpiarErrorCampo = (campo: keyof ErroresRegistro) => {
+    setErrores((anteriores) => ({ ...anteriores, [campo]: undefined }));
+  };
+
+  // Al escribir: limpia el error general y el error de ese campo
+  const limpiarErroresCampo = (campo: keyof ErroresRegistro) => {
+    limpiarError(setError);
+    limpiarErrorCampo(campo);
   };
 
   const guardarInformacion = async () => {
     limpiarError(setError);
+    setErrores({});
 
     const datosLimpios = limpiarCampos({
       nombresUsuario,
@@ -56,7 +70,7 @@ const PantallaRegistro = () => {
       fechaNacimientoUsuario
     });
 
-    const mensajeValidacion = validarRegistro(
+    const erroresValidacion = validarRegistro(
       datosLimpios.nombresUsuario,
       datosLimpios.apellidosUsuario,
       datosLimpios.correoUsuario,
@@ -65,8 +79,8 @@ const PantallaRegistro = () => {
       datosLimpios.fechaNacimientoUsuario
     );
 
-    if (mensajeValidacion) {
-      setError(mensajeValidacion);
+    if (Object.keys(erroresValidacion).length > 0) {
+      setErrores(erroresValidacion);
       return;
     }
 
@@ -125,8 +139,11 @@ const PantallaRegistro = () => {
             placeholder='Escribe tus nombres'
             value={nombresUsuario}
             icono='account-outline'
+            error={errores.nombres}
             onChangeText={(texto) =>
-              actualizarCampo(texto, setNombresUsuario, setError)
+              actualizarCampo(texto, setNombresUsuario, () =>
+                limpiarErroresCampo('nombres')
+              )
             }
           />
 
@@ -135,8 +152,11 @@ const PantallaRegistro = () => {
             placeholder='Escribe tus apellidos'
             value={apellidosUsuario}
             icono='account-multiple-outline'
+            error={errores.apellidos}
             onChangeText={(texto) =>
-              actualizarCampo(texto, setApellidosUsuario, setError)
+              actualizarCampo(texto, setApellidosUsuario, () =>
+                limpiarErroresCampo('apellidos')
+              )
             }
           />
 
@@ -147,8 +167,11 @@ const PantallaRegistro = () => {
             keyboardType='email-address'
             autoCapitalize='none'
             icono='email-outline'
+            error={errores.correo}
             onChangeText={(texto) =>
-              actualizarCampo(texto, setCorreoUsuario, setError)
+              actualizarCampo(texto, setCorreoUsuario, () =>
+                limpiarErroresCampo('correo')
+              )
             }
           />
 
@@ -158,8 +181,11 @@ const PantallaRegistro = () => {
             value={contrasenaUsuario}
             secureTextEntry
             icono='lock-outline'
+            error={errores.contrasena}
             onChangeText={(texto) =>
-              actualizarCampo(texto, setContrasenaUsuario, setError)
+              actualizarCampo(texto, setContrasenaUsuario, () =>
+                limpiarErroresCampo('contrasena')
+              )
             }
           />
 
@@ -168,8 +194,11 @@ const PantallaRegistro = () => {
             placeholder='Ej: 3001123456'
             value={numeroTelefonoUsuario}
             icono='phone-outline'
+            error={errores.numeroTelefono}
             onChangeText={(texto) =>
-              actualizarCampo(texto, setNumeroTelefonoUsuario, setError)
+              actualizarCampo(texto, setNumeroTelefonoUsuario, () =>
+                limpiarErroresCampo('numeroTelefono')
+              )
             }
           />
 
@@ -178,8 +207,11 @@ const PantallaRegistro = () => {
             placeholder='AAAA-MM-DD'
             value={fechaNacimientoUsuario}
             icono='calendar-outline'
+            error={errores.fechaNacimiento}
             onChangeText={(texto) =>
-              actualizarCampo(texto, setFechaNacimientoUsuario, setError)
+              actualizarCampo(texto, setFechaNacimientoUsuario, () =>
+                limpiarErroresCampo('fechaNacimiento')
+              )
             }
           />
 
