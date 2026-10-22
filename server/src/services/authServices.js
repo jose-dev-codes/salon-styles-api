@@ -1,6 +1,11 @@
 // Importa la función del model encargada de buscar el usuario en PostgreSQL.
 import { obtenerUsuarioPorCorreo } from "../models/usuarioModel.js";
 
+import {
+    registrarTokenRevocado,
+    tokenEstaRevocado
+} from "../models/tokenRevocadoModel.js";
+
 // Importa bcrypt para comparar la contraseña recibida con el hash almacenado.
 import bcrypt from "bcryptjs";
 
@@ -36,7 +41,31 @@ export const validarCredenciales = async (correo, contrasena) => {
     } catch (error) {
         // Propaga el error para que el controller gestione la respuesta al cliente.
         throw new Error(
-            "Error en la base de datos durante la autenticación",
+            "Error en la base de datos durante la autenticación.",
+            { cause: error }
+        );
+    }
+};
+
+// Registra el token como revocado para impedir que se siga utilizando después de cerrar sesión.
+export const cerrarSesion = async (tokenId, fechaExpiracion) => {
+    try {
+        await registrarTokenRevocado(tokenId, fechaExpiracion);
+    } catch (error) {
+        throw new Error(
+            "Error en la base de datos al cerrar la sesión.",
+            { cause: error }
+        );
+    }
+};
+
+// Comprueba si un token fue revocado.
+export const verificarTokenRevocado = async (tokenId) => {
+    try {
+        return await tokenEstaRevocado(tokenId);
+    } catch (error) {
+        throw new Error(
+            "Error en la base de datos al verificar el token.",
             { cause: error }
         );
     }

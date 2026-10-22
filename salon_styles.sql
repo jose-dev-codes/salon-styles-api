@@ -115,3 +115,10 @@ VALUES
     (1, 2, '2026-05-15', '10:00:00', 'Ana López', 'pendiente'),
     (2, 1, '2026-05-16', '14:30:00', 'María Pérez', 'pendiente'),
     (3, 3, '2026-05-17', '09:00:00', 'Laura Díaz', 'completada');
+
+-- Creación de la tabla de tokens revocados
+-- Almacena los identificadores de los tokens invalidados al cerrar sesión
+CREATE TABLE tokens_revocados (
+    token_id VARCHAR(255) PRIMARY KEY,
+    fecha_expiracion TIMESTAMPTZ NOT NULL
+);
