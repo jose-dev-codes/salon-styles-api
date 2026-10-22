@@ -1,20 +1,11 @@
 import { Text, View, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { cerrarSesion } from '@/services/sesionService';
 import Encabezado from '@/components/Encabezado';
 import Boton from '@/components/Boton';
 import BarraNavegacion from '@/components/BarraNavegacion';
 
 const PantallaPerfil = () => {
-  const cerrarSesion = async () => {
-    await AsyncStorage.removeItem('token');
-
-    router.dismissAll();
-
-    router.replace('/');
-  };
-
   return (
     <SafeAreaView style={styles.contenedor}>
       <View style={styles.encabezado}>
